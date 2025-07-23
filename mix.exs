@@ -30,10 +30,11 @@ defmodule Plaid.Mixfile do
 
   defp deps do
     [
-      {:httpoison, "~> 1.4"},
+      {:req, "0.5.8"},
       {:poison, "~> 4.0"},
       {:jason, "~> 1.1"},
-      {:bypass, "~> 0.8", only: [:test]},
+      {:bypass, "~> 0.8.1", only: [:test]},
+      {:plug_cowboy, "~> 1.0", only: [:test]},
       {:credo, "~> 0.5", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.6", only: [:test]},
       {:ex_doc, "~> 0.21", only: [:dev], runtime: false},

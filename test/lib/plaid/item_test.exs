@@ -16,7 +16,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "item/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.get(%{access_token: "my-token"})
@@ -35,7 +38,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "item/public_token/exchange" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.exchange_public_token(%{public_token: "public-token"})
@@ -50,7 +56,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "item/public_token/create" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.create_public_token(%{access_token: "my-token"})
@@ -66,8 +75,11 @@ defmodule Plaid.ItemTest do
         {:ok, req_body, _conn} = Plug.Conn.read_body(conn)
         assert "POST" == conn.method
         assert "item/webhook/update" == Enum.join(conn.path_info, "/")
-        assert String.starts_with?(req_body, "{\"webhook\":\"https://plaid.com/updated/hook\"")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+        assert String.contains?(req_body, "\"webhook\":\"https://plaid.com/updated/hook\"")
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       params = %{access_token: "my-token", webhook: "https://plaid.com/updated/hook"}
@@ -84,7 +96,10 @@ defmodule Plaid.ItemTest do
         assert "POST" == conn.method
         assert "item/access_token/invalidate" == Enum.join(conn.path_info, "/")
         assert String.ends_with?(req_body, "\"access_token\":\"my-token\"}")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.rotate_access_token(%{access_token: "my-token"})
@@ -99,7 +114,10 @@ defmodule Plaid.ItemTest do
         assert "POST" == conn.method
         assert "item/access_token/update_version" == Enum.join(conn.path_info, "/")
         assert String.ends_with?(req_body, "\"access_token_v1\":\"my-token\"}")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.update_version_access_token(%{access_token_v1: "my-token"})
@@ -112,7 +130,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "item/remove" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Item.remove(%{access_token: "my-token"})
@@ -125,7 +146,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "processor/dwolla/processor_token/create" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -140,7 +164,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "processor/dwolla/processor_token/create" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -159,7 +186,10 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "processor/stripe/bank_account_token/create" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =

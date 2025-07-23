@@ -87,28 +87,29 @@ defmodule PlaidTest do
       cleanup_config()
     end
 
-    test "make_request/2 requests GET returns HTTPoison.Response", %{bypass: bypass} do
+    test "make_request_with_cred/2 requests GET returns Req.Response", %{bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         assert "GET" == conn.method
         Plug.Conn.resp(conn, 200, "{\"status\":\"ok\"}")
       end)
 
-      {:ok, resp} = Plaid.make_request(:get, "any")
+      {:ok, resp} = Plaid.make_request_with_cred(:get, "any")
 
-      assert HTTPoison.Response == resp.__struct__
+      assert Req.Response == resp.__struct__
     end
 
-    test "make_request/2 returns HTTPoison.Error when HTTP call fails", %{bypass: bypass} do
+    test "make_request_with_cred/2 returns error when HTTP call fails", %{bypass: bypass} do
       Bypass.down(bypass)
 
-      assert {:error, %HTTPoison.Error{}} = Plaid.make_request(:get, "any")
+      assert {:error, _error} = Plaid.make_request_with_cred(:get, "any")
     end
 
     test "make_request_with_cred/3 merges credentials into request body", %{bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         {:ok, body, _conn} = Plug.Conn.read_body(conn)
         assert "POST" == conn.method
-        assert "{\"secret\":\"shhhh\",\"client_id\":\"id\"}" == body
+        decoded_body = Jason.decode!(body)
+        assert %{"secret" => "shhhh", "client_id" => "id"} == decoded_body
         Plug.Conn.resp(conn, 200, "{\"status\":\"ok\"}")
       end)
 
@@ -139,7 +140,7 @@ defmodule PlaidTest do
       Plaid.make_request_with_cred(:post, "any", %{root_uri: "http://0.0.0.0:#{bypass.port}/"})
     end
 
-    test "make_request/2 sets headers correctly", %{bypass: bypass} do
+    test "make_request_with_cred/2 sets headers correctly", %{bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         content_type =
           Enum.find(conn.req_headers, fn {k, _v} ->
@@ -150,7 +151,7 @@ defmodule PlaidTest do
         Plug.Conn.resp(conn, 200, "{\"status\":\"ok\"}")
       end)
 
-      Plaid.make_request(:get, "any")
+      Plaid.make_request_with_cred(:get, "any")
     end
   end
 

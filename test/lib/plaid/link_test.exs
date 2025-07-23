@@ -15,7 +15,10 @@ defmodule Plaid.LinkTest do
     Bypass.expect(bypass, fn conn ->
       assert "POST" == conn.method
       assert "link/token/create" == Enum.join(conn.path_info, "/")
-      Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.resp(200, Poison.encode!(body))
     end)
 
     assert {:ok, resp} =
@@ -40,7 +43,10 @@ defmodule Plaid.LinkTest do
     Bypass.expect(bypass, fn conn ->
       assert "POST" == conn.method
       assert "link/token/get" == Enum.join(conn.path_info, "/")
-      Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.resp(200, Poison.encode!(body))
     end)
 
     assert {:ok, resp} =

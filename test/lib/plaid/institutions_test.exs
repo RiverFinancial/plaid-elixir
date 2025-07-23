@@ -16,7 +16,10 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "institutions/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Institutions.get(%{count: 1, offset: 0})
@@ -31,7 +34,10 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "institutions/get_by_id" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Institutions.get_by_id("ins_109512")
@@ -46,7 +52,10 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "institutions/get_by_id" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -62,7 +71,10 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "institutions/search" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Institutions.search(%{query: "wells", products: nil})

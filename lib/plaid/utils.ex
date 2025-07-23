@@ -9,18 +9,18 @@ defmodule Plaid.Utils do
   @doc """
   Handles Plaid response and maps to the correct data structure.
   """
-  @spec handle_resp({:ok, HTTPoison.Response.t()} | {:error, HTTPoison.Error.t()}, endpoint) ::
-          {:ok, any} | {:error, Plaid.Error.t() | HTTPoison.Error.t()}
-  def handle_resp({:ok, %HTTPoison.Response{status_code: code} = resp}, endpoint)
+  @spec handle_resp({:ok, Req.Response.t()} | {:error, Exception.t()}, endpoint) ::
+          {:ok, any} | {:error, Plaid.Error.t() | Exception.t()}
+  def handle_resp({:ok, %Req.Response{status: code, body: body}}, endpoint)
       when code in 200..201 do
-    {:ok, map_response(resp.body, endpoint)}
+    {:ok, map_response(body, endpoint)}
   end
 
-  def handle_resp({:ok, %HTTPoison.Response{} = resp}, _endpoint) do
-    {:error, Poison.Decode.transform(resp.body, %{as: %Plaid.Error{}})}
+  def handle_resp({:ok, %Req.Response{body: body}}, _endpoint) do
+    {:error, Poison.Decode.transform(body, %{as: %Plaid.Error{}})}
   end
 
-  def handle_resp({:error, %HTTPoison.Error{} = error}, _endpoint) do
+  def handle_resp({:error, %{} = error}, _endpoint) do
     {:error, error}
   end
 

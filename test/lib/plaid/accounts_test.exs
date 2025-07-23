@@ -16,7 +16,10 @@ defmodule Plaid.AccountsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "accounts/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Accounts.get(%{access_token: "my-token"})
@@ -29,7 +32,10 @@ defmodule Plaid.AccountsTest do
 
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
-        Plug.Conn.resp(conn, 400, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(400, Poison.encode!(body))
       end)
 
       assert {:error, resp} = Plaid.Accounts.get(%{access_token: "my-token"})
@@ -43,7 +49,10 @@ defmodule Plaid.AccountsTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "accounts/balance/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.Accounts.get_balance(%{access_token: "my-token"})

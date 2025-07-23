@@ -44,14 +44,14 @@ config :plaid,
   client_id: "your_client_id",
   secret: "your_secret",
   public_key: "your_public_key",
-  httpoison_options: [timeout: 10_000, recv_timeout: 30_000]
+  req_options: [receive_timeout: 30_000, pool_timeout: 10_000]
 ```
 
 By default, `root_uri` is set by `mix` environment. You can override it in your config.
 - `dev` - development.plaid.com
 - `prod`- production.plaid.com
 
-Finally, you can pass in custom configuration for [HTTPoison](https://github.com/edgurgel/httpoison). It's recommended you
+Finally, you can pass in custom configuration for [Req](https://github.com/wojtekmach/req). It's recommended you
 extend the receive timeout for Plaid, especially for retrieving historical transactions.
 
 ## Runtime configuration

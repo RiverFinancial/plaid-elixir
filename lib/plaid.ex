@@ -5,8 +5,6 @@ defmodule Plaid do
   [Plaid API Docs](https://plaid.com/docs/api)
   """
 
-  use HTTPoison.Base
-
   defmodule MissingClientIdError do
     defexception message: """
                  The `client_id` is required for calls to Plaid. Please either configure `client_id`
@@ -71,31 +69,32 @@ defmodule Plaid do
   end
 
   @doc """
-  Makes request without credentials.
-  """
-  @spec make_request(atom, String.t(), map, map, Keyword.t()) ::
-          {:ok, HTTPoison.Response.t()} | {:error, HTTPoison.Error.t()}
-  @deprecated "Use `Plaid.make_request_with_cred/3`. This function doesn't allow runtime configuration of the root_uri."
-  def make_request(method, endpoint, body \\ %{}, headers \\ %{}, options \\ []) do
-    make_request_with_cred(method, endpoint, %{}, body, headers, options)
-  end
-
-  @doc """
   Makes request with credentials.
   """
   @spec make_request_with_cred(atom, String.t(), map, map, map, Keyword.t()) ::
-          {:ok, HTTPoison.Response.t()} | {:error, HTTPoison.Error.t()}
-  def make_request_with_cred(method, endpoint, config, body \\ %{}, headers \\ %{}, options \\ []) do
+          {:ok, Req.Response.t()} | {:error, Exception.t()}
+  def make_request_with_cred(
+        method,
+        endpoint,
+        config \\ %{},
+        body \\ %{},
+        headers \\ %{},
+        options \\ []
+      ) do
     request_endpoint = "#{get_root_uri(config)}#{endpoint}"
     cred = Map.delete(config, :root_uri)
-    request_body = Map.merge(body, cred) |> Poison.encode!()
-    request_headers = get_request_headers() |> Map.merge(headers) |> Map.to_list()
-    options = httpoison_request_options() ++ options
-    request(method, request_endpoint, request_body, request_headers, options)
-  end
+    request_body = Map.merge(body, cred)
+    request_headers = get_request_headers() |> Map.merge(headers)
 
-  def process_response_body(body) do
-    Poison.Parser.parse!(body, %{})
+    req_options =
+      [
+        method: method,
+        url: request_endpoint,
+        json: request_body,
+        headers: request_headers
+      ] ++ req_request_options() ++ options
+
+    Req.request(req_options)
   end
 
   defp get_request_headers do
@@ -103,8 +102,8 @@ defmodule Plaid do
     |> Map.put("Content-Type", "application/json")
   end
 
-  defp httpoison_request_options do
-    Application.get_env(:plaid, :httpoison_options, [])
+  defp req_request_options do
+    Application.get_env(:plaid, :req_options, [])
   end
 
   @doc """

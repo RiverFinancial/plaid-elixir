@@ -17,7 +17,10 @@ defmodule Plaid.PaymentInitiationTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "investments/transactions/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -41,7 +44,10 @@ defmodule Plaid.PaymentInitiationTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "payment_initiation/recipient/create" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -62,7 +68,10 @@ defmodule Plaid.PaymentInitiationTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "payment_initiation/recipient/get" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} =
@@ -82,7 +91,10 @@ defmodule Plaid.PaymentInitiationTest do
       Bypass.expect(bypass, fn conn ->
         assert "POST" == conn.method
         assert "payment_initiation/recipient/list" == Enum.join(conn.path_info, "/")
-        Plug.Conn.resp(conn, 200, Poison.encode!(body))
+
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.resp(200, Poison.encode!(body))
       end)
 
       assert {:ok, resp} = Plaid.PaymentInitiation.Recipients.list()
