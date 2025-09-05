@@ -45,7 +45,7 @@ defmodule Plaid.Accounts do
             type: String.t(),
             subtype: String.t(),
             verification_status: String.t(),
-            holder_category: String.t()
+            holder_category: String.t() | nil
           }
 
     defmodule Balance do
