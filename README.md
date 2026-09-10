@@ -1,6 +1,6 @@
 # Plaid
 
-[![Build Status](https://travis-ci.org/wfgilman/plaid-elixir.svg?branch=master)](https://travis-ci.org/wfgilman/plaid-elixir)
+[![CI](https://github.com/RiverFinancial/plaid-elixir/actions/workflows/ci.yml/badge.svg)](https://github.com/RiverFinancial/plaid-elixir/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wfgilman/plaid-elixir/badge.svg?branch=master)](https://coveralls.io/github/wfgilman/plaid-elixir?branch=master)
 [![Module Version](https://img.shields.io/hexpm/v/plaid_elixir.svg)](https://hex.pm/packages/plaid_elixir)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/plaid_elixir/)
@@ -9,6 +9,17 @@
 [![Last Updated](https://img.shields.io/github/last-commit/wfgilman/plaid-elixir.svg)](https://github.com/wfgilman/plaid-elixir/commits/master)
 
 Elixir library for Plaid's V2 API.
+
+The River fork requires Elixir 1.18+, Erlang/OTP 27+, and Tesla 1.14+.
+HTTP requests and responses use Elixir's built-in `JSON` module. Response structs,
+including nested fields and defaults, are unchanged, and remain encodable with
+`Jason` for Phoenix compatibility.
+
+Malformed JSON now returns native decoder reasons inside
+`{:error, {Tesla.Middleware.JSON, :decode, reason}}`, rather than `Jason.DecodeError`.
+HTTP encoding uses `JSON.Encoder`, not custom `Jason.Encoder` implementations.
+Unsupported values produce native encoder errors; invalid UTF-8 request strings
+raise the native `ErlangError`. Plaid API errors still return `{:error, %Plaid.Error{}}`.
 
 Supported Plaid products:
 

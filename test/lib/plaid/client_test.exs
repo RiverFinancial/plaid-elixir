@@ -174,11 +174,11 @@ defmodule Plaid.ClientTest do
              ] == headers
     end
 
-    test "JSON middleware is initialized" do
+    test "JSON middleware uses the native JSON engine" do
       client = Client.new()
 
       assert Enum.any?(client.pre, fn
-               {Tesla.Middleware.JSON, _, _} ->
+               {Tesla.Middleware.JSON, _, [[engine: JSON]]} ->
                  true
 
                _ ->

@@ -115,15 +115,13 @@ defmodule Plaid.Item do
   end
 
   defp map_item(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Item{
-          status: %Plaid.Item.Status{
-            investments: %Plaid.Item.Status.Investments{},
-            transactions: %Plaid.Item.Status.Transactions{},
-            last_webhook: %Plaid.Item.Status.LastWebhook{}
-          }
+      %Plaid.Item{
+        status: %Plaid.Item.Status{
+          investments: %Plaid.Item.Status.Investments{},
+          transactions: %Plaid.Item.Status.Transactions{},
+          last_webhook: %Plaid.Item.Status.LastWebhook{}
         }
       }
     )

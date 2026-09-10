@@ -119,13 +119,13 @@ defmodule Plaid.PaymentInitiation.Payments do
   end
 
   defp map_payments(body) do
-    Poison.Decode.transform(body, %{
-      as: %Plaid.PaymentInitiation.Payments{payments: [full_struct()]}
+    Plaid.ResponseMapper.transform(body, %Plaid.PaymentInitiation.Payments{
+      payments: [full_struct()]
     })
   end
 
   defp map_payment(body) do
-    Poison.Decode.transform(body, %{as: full_struct()})
+    Plaid.ResponseMapper.transform(body, full_struct())
   end
 
   defp full_struct do

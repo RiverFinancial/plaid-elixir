@@ -81,16 +81,14 @@ defmodule Plaid.Income do
   end
 
   defp map_income(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Income{
-          item: %Plaid.Item{},
-          income: %Plaid.Income.Income{
-            income_streams: [
-              %Plaid.Income.Income.IncomeStream{}
-            ]
-          }
+      %Plaid.Income{
+        item: %Plaid.Item{},
+        income: %Plaid.Income.Income{
+          income_streams: [
+            %Plaid.Income.Income.IncomeStream{}
+          ]
         }
       }
     )

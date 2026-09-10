@@ -83,13 +83,13 @@ defmodule Plaid.PaymentInitiation.Recipients do
   end
 
   defp map_recipients(body) do
-    Poison.Decode.transform(body, %{
-      as: %Plaid.PaymentInitiation.Recipients{recipients: [full_struct()]}
+    Plaid.ResponseMapper.transform(body, %Plaid.PaymentInitiation.Recipients{
+      recipients: [full_struct()]
     })
   end
 
   defp map_recipient(body) do
-    Poison.Decode.transform(body, %{as: full_struct()})
+    Plaid.ResponseMapper.transform(body, full_struct())
   end
 
   defp full_struct do

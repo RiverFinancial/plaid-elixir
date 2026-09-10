@@ -82,7 +82,7 @@ defmodule Plaid.Client do
            {"PLAID-CLIENT-ID", get_client_id(config)},
            {"PLAID-SECRET", get_secret(config)}
          ]},
-        Tesla.Middleware.JSON,
+        {Tesla.Middleware.JSON, engine: JSON},
         {Tesla.Middleware.Telemetry, get_metadata(config)}
       ] ++ get_middleware(config)
 

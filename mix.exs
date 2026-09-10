@@ -7,7 +7,7 @@ defmodule Plaid.Mixfile do
     [
       app: :plaid,
       version: "3.3.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       deps: deps(),
@@ -29,9 +29,8 @@ defmodule Plaid.Mixfile do
 
   defp deps do
     [
-      {:tesla, "~> 1.5"},
+      {:tesla, "~> 1.14"},
       {:hackney, "~> 1.18"},
-      {:poison, "~> 5.0"},
       {:jason, "~> 1.4"},
       {:bypass, "~> 2.1", only: [:test]},
       {:credo, "~> 1.6", only: [:dev], runtime: false},

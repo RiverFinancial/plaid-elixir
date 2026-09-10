@@ -270,13 +270,13 @@ defmodule Plaid.Institutions do
   end
 
   defp map_institutions(body) do
-    Poison.Decode.transform(body, %{as: %Plaid.Institutions{institutions: [full_struct()]}})
+    Plaid.ResponseMapper.transform(body, %Plaid.Institutions{institutions: [full_struct()]})
   end
 
   defp map_institution(%{"institution" => ins, "request_id" => request_id}) do
     ins
     |> Map.put_new("request_id", request_id)
-    |> Poison.Decode.transform(%{as: full_struct()})
+    |> Plaid.ResponseMapper.transform(full_struct())
   end
 
   defp full_struct do

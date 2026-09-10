@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased (River fork)
+
+- Replace Poison response mapping with an internal mapper that preserves nested
+  structs, missing/null fields, schema defaults, and unknown-field handling.
+- Use native `JSON` for HTTP encoding/decoding; retain Jason support for response
+  struct serialization. Native codec errors replace Jason-specific errors for
+  malformed JSON and unsupported request values (see the README).
+- Require Elixir 1.18+, Erlang/OTP 27+, and Tesla 1.14+.
+- Align the standalone Tesla/Hackney lock versions with Alto and refresh their
+  required transitive dependencies. Update the Cowboy/Cowlib test dependencies
+  for OTP 29 compatibility. Alto's HTTP dependency versions are unchanged.
+- Replace the old Travis configuration with GitHub CI on Elixir 1.18/OTP 27 and
+  Elixir 1.20/OTP 29. Serialize the existing global-state/telemetry tests.
+
 ## v3.0
 
 ### Hard Deprecations
