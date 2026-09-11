@@ -211,24 +211,22 @@ defmodule Plaid.Transactions do
   end
 
   defp map_transactions(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Transactions{
-          accounts: [
-            %Plaid.Accounts.Account{
-              balances: %Plaid.Accounts.Account.Balance{}
-            }
-          ],
-          transactions: [
-            %Plaid.Transactions.Transaction{
-              location: %Plaid.Transactions.Transaction.Location{},
-              payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
-              personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
-            }
-          ],
-          item: %Plaid.Item{}
-        }
+      %Plaid.Transactions{
+        accounts: [
+          %Plaid.Accounts.Account{
+            balances: %Plaid.Accounts.Account.Balance{}
+          }
+        ],
+        transactions: [
+          %Plaid.Transactions.Transaction{
+            location: %Plaid.Transactions.Transaction.Location{},
+            payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
+            personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
+          }
+        ],
+        item: %Plaid.Item{}
       }
     )
   end
@@ -257,28 +255,26 @@ defmodule Plaid.Transactions do
   end
 
   defp map_sync_transactions(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Transactions.Sync{
-          added: [
-            %Plaid.Transactions.Transaction{
-              location: %Plaid.Transactions.Transaction.Location{},
-              payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
-              personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
-            }
-          ],
-          modified: [
-            %Plaid.Transactions.Transaction{
-              location: %Plaid.Transactions.Transaction.Location{},
-              payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
-              personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
-            }
-          ],
-          removed: [
-            %Plaid.Transactions.RemovedTransaction{}
-          ]
-        }
+      %Plaid.Transactions.Sync{
+        added: [
+          %Plaid.Transactions.Transaction{
+            location: %Plaid.Transactions.Transaction.Location{},
+            payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
+            personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
+          }
+        ],
+        modified: [
+          %Plaid.Transactions.Transaction{
+            location: %Plaid.Transactions.Transaction.Location{},
+            payment_meta: %Plaid.Transactions.Transaction.PaymentMeta{},
+            personal_finance_category: %Plaid.Transactions.Transaction.PersonalFinanceCategory{}
+          }
+        ],
+        removed: [
+          %Plaid.Transactions.RemovedTransaction{}
+        ]
       }
     )
   end

@@ -67,7 +67,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.PaymentInitiation.Recipients.Recipient{}} =
@@ -89,7 +89,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.PaymentInitiation.Recipients.create(params, config)
@@ -130,7 +130,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.PaymentInitiation.Recipients.Recipient{}} =
@@ -152,7 +152,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.PaymentInitiation.Recipients.get(params, config)
@@ -194,7 +194,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.PaymentInitiation.Recipients{}} =
@@ -216,7 +216,7 @@ defmodule Plaid.PaymentInitiation.RecipientsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.PaymentInitiation.Recipients.list(config)

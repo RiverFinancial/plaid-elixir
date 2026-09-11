@@ -85,11 +85,9 @@ defmodule Plaid.Link do
   end
 
   defp map_link(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Link{metadata: %Plaid.Link.Metadata{}}
-      }
+      %Plaid.Link{metadata: %Plaid.Link.Metadata{}}
     )
   end
 
