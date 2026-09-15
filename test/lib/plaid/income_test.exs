@@ -67,7 +67,7 @@ defmodule Plaid.IncomeTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Income{}} = Plaid.Income.get(params, config)
@@ -88,7 +88,7 @@ defmodule Plaid.IncomeTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Income.get(params, config)

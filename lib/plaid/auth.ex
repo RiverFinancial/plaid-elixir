@@ -131,23 +131,21 @@ defmodule Plaid.Auth do
   end
 
   defp map_auth(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Auth{
-          numbers: %Plaid.Auth.Numbers{
-            ach: [%Plaid.Auth.Numbers.ACH{}],
-            eft: [%Plaid.Auth.Numbers.EFT{}],
-            international: [%Plaid.Auth.Numbers.International{}],
-            bacs: [%Plaid.Auth.Numbers.BACS{}]
-          },
-          item: %Plaid.Item{},
-          accounts: [
-            %Plaid.Accounts.Account{
-              balances: %Plaid.Accounts.Account.Balance{}
-            }
-          ]
-        }
+      %Plaid.Auth{
+        numbers: %Plaid.Auth.Numbers{
+          ach: [%Plaid.Auth.Numbers.ACH{}],
+          eft: [%Plaid.Auth.Numbers.EFT{}],
+          international: [%Plaid.Auth.Numbers.International{}],
+          bacs: [%Plaid.Auth.Numbers.BACS{}]
+        },
+        item: %Plaid.Item{},
+        accounts: [
+          %Plaid.Accounts.Account{
+            balances: %Plaid.Accounts.Account.Balance{}
+          }
+        ]
       }
     )
   end

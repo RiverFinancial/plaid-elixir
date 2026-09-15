@@ -84,7 +84,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Institutions{}} = Plaid.Institutions.get(params, config)
@@ -105,7 +105,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Institutions.get(params, config)
@@ -165,7 +165,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Institutions.Institution{}} =
@@ -187,7 +187,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Institutions.get_by_id("ins_1", config)
@@ -229,7 +229,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Institutions{}} = Plaid.Institutions.search(params, config)
@@ -250,7 +250,7 @@ defmodule Plaid.InstitutionsTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Institutions.search(params, config)

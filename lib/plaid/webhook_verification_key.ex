@@ -36,6 +36,6 @@ defmodule Plaid.WebhookVerificationKey do
     |> struct(method: :post, endpoint: "webhook_verification_key/get", body: params)
     |> Request.add_metadata(config)
     |> c.send_request(Client.new(config))
-    |> c.handle_response(&Poison.Decode.transform(&1, %{as: %Plaid.WebhookVerificationKey{}}))
+    |> c.handle_response(&Plaid.ResponseMapper.transform(&1, %Plaid.WebhookVerificationKey{}))
   end
 end

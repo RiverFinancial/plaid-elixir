@@ -38,14 +38,12 @@ defmodule Plaid.Categories do
   end
 
   defp map_categories(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Categories{
-          categories: [
-            %Plaid.Categories.Category{}
-          ]
-        }
+      %Plaid.Categories{
+        categories: [
+          %Plaid.Categories.Category{}
+        ]
       }
     )
   end

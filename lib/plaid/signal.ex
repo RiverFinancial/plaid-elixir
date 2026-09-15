@@ -195,17 +195,15 @@ defmodule Plaid.Signal do
   end
 
   defp map_signal(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Signal{
-          scores: %Plaid.Signal.Scores{
-            customer_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
-            bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
-          },
-          warnings: [%Plaid.Signal.Warning{}],
-          ruleset: %Plaid.Signal.Ruleset{}
-        }
+      %Plaid.Signal{
+        scores: %Plaid.Signal.Scores{
+          customer_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
+          bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{}
+        },
+        warnings: [%Plaid.Signal.Warning{}],
+        ruleset: %Plaid.Signal.Ruleset{}
       }
     )
   end

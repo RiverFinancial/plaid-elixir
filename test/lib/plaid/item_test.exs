@@ -72,7 +72,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Item{}} = Plaid.Item.get(params, config)
@@ -93,7 +93,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Item.get(params, config)
@@ -136,7 +136,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{access_token: _, request_id: _, item_id: _}} =
@@ -180,7 +180,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{public_token: _, expiration: _, request_id: _}} =
@@ -223,7 +223,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Item{}} = Plaid.Item.update_webhook(params, config)
@@ -265,7 +265,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{new_access_token: _, request_id: _}} =
@@ -308,7 +308,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{access_token: _, request_id: _}} =
@@ -350,7 +350,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{request_id: _}} = Plaid.Item.remove(params, config)
@@ -392,7 +392,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{processor_token: _, request_id: _}} =
@@ -435,7 +435,7 @@ defmodule Plaid.ItemTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{stripe_bank_account_token: _}} =

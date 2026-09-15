@@ -74,19 +74,17 @@ defmodule Plaid.Investments.Holdings do
   end
 
   defp map_investments_holdings(body) do
-    Poison.Decode.transform(
+    Plaid.ResponseMapper.transform(
       body,
-      %{
-        as: %Plaid.Investments.Holdings{
-          accounts: [
-            %Plaid.Accounts.Account{
-              balances: %Plaid.Accounts.Account.Balance{}
-            }
-          ],
-          securities: [%Plaid.Investments.Security{}],
-          holdings: [%Plaid.Investments.Holdings.Holding{}],
-          item: %Plaid.Item{}
-        }
+      %Plaid.Investments.Holdings{
+        accounts: [
+          %Plaid.Accounts.Account{
+            balances: %Plaid.Accounts.Account.Balance{}
+          }
+        ],
+        securities: [%Plaid.Investments.Security{}],
+        holdings: [%Plaid.Investments.Holdings.Holding{}],
+        item: %Plaid.Item{}
       }
     )
   end

@@ -168,31 +168,29 @@ defmodule Plaid.AssetReport do
   end
 
   defp map_asset_report(%{"report" => report, "warnings" => warnings}) do
-    Poison.Decode.transform(Map.put_new(report, "warnings", warnings), %{
-      as: %Plaid.AssetReport{
-        items: [
-          %Plaid.AssetReport.Item{
-            accounts: [
-              %Plaid.Accounts.Account{
-                balances: %Plaid.Accounts.Account.Balance{},
-                owners: [
-                  %Plaid.Accounts.Account.Owner{
-                    addresses: [%Plaid.Accounts.Account.Owner.Address{}],
-                    emails: [%Plaid.Accounts.Account.Owner.Email{}],
-                    phone_numbers: [%Plaid.Accounts.Account.Owner.PhoneNumber{}]
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        user: %Plaid.AssetReport.User{},
-        warnings: [
-          %Plaid.AssetReport.Warning{
-            cause: %Plaid.AssetReport.Warning.Cause{}
-          }
-        ]
-      }
+    Plaid.ResponseMapper.transform(Map.put_new(report, "warnings", warnings), %Plaid.AssetReport{
+      items: [
+        %Plaid.AssetReport.Item{
+          accounts: [
+            %Plaid.Accounts.Account{
+              balances: %Plaid.Accounts.Account.Balance{},
+              owners: [
+                %Plaid.Accounts.Account.Owner{
+                  addresses: [%Plaid.Accounts.Account.Owner.Address{}],
+                  emails: [%Plaid.Accounts.Account.Owner.Email{}],
+                  phone_numbers: [%Plaid.Accounts.Account.Owner.PhoneNumber{}]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      user: %Plaid.AssetReport.User{},
+      warnings: [
+        %Plaid.AssetReport.Warning{
+          cause: %Plaid.AssetReport.Warning.Cause{}
+        }
+      ]
     })
   end
 end

@@ -140,7 +140,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %Plaid.Signal{}} = Plaid.Signal.evaluate(@evaluate_params, config)
@@ -161,7 +161,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Signal.evaluate(@evaluate_params, config)
@@ -208,7 +208,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_decision(
@@ -232,7 +232,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Signal.report_decision(
@@ -282,7 +282,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_return(
@@ -306,7 +306,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Signal.report_return(
@@ -356,7 +356,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(200, Poison.encode!(body))
+        |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
       assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.prepare(
@@ -380,7 +380,7 @@ defmodule Plaid.SignalTest do
       Bypass.expect(bypass, fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
-        |> Plug.Conn.resp(400, Poison.encode!(body))
+        |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
       assert {:error, %Plaid.Error{}} = Plaid.Signal.prepare(@prepare_params, config)
