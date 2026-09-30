@@ -299,11 +299,53 @@ defmodule PlaidTest do
       assert error.http_code == env.status
     end
 
+    test "returns {:error, Plaid.Error.t} for a non-JSON error body" do
+      env = %Tesla.Env{
+        status: 502,
+        body: "<html><h1>502 Bad Gateway</h1></html>"
+      }
+
+      assert {:error,
+              %Plaid.Error{http_code: 502, error_message: "<html><h1>502 Bad Gateway</h1></html>"}} =
+               Plaid.handle_response({:ok, env}, & &1)
+    end
+
+    test "caps a large non-JSON error body at 1,000 bytes without leaving a partial character" do
+      # "a" plus 499 "é" is 999 bytes, so the cap lands inside the next "é".
+      body = "a" <> String.duplicate("é", 1_000)
+
+      assert error_message_for(body) == "a" <> String.duplicate("é", 499) <> "�..."
+    end
+
+    test "keeps a non-JSON error body of exactly 1,000 bytes intact" do
+      body = String.duplicate("a", 1_000)
+
+      assert error_message_for(body) == body
+    end
+
+    test "replaces invalid UTF-8 in a non-JSON error body" do
+      assert error_message_for(<<"caf", 0xE9, " au lait">>) == "caf� au lait"
+    end
+
+    test "inspects a non-string error body" do
+      assert error_message_for([1, 2]) == "[1, 2]"
+    end
+
+    test "keeps a nil error body as nil" do
+      assert error_message_for(nil) == nil
+    end
+
     test "returns http failure" do
       mapper = fn body -> body end
 
       assert {:error, :econnrefused} = Plaid.handle_response({:error, :econnrefused}, mapper)
     end
+  end
+
+  defp error_message_for(body) do
+    env = %Tesla.Env{status: 502, body: body}
+    {:error, %Plaid.Error{error_message: error_message}} = Plaid.handle_response({:ok, env}, & &1)
+    error_message
   end
 
   def echo_event(event, measurements, metadata, config) do

@@ -2,6 +2,11 @@
 
 ## Unreleased (River fork)
 
+- Non-2xx responses whose body is not a JSON object (proxy 502 HTML, Envoy
+  plaintext) return `{:error, %Plaid.Error{http_code: status, error_message: body}}`
+  instead of raising `BadMapError`. The message is capped at 1,000 bytes, invalid
+  UTF-8 is replaced, and non-string bodies are inspected. A body sent as
+  `application/json` that fails to decode still returns Tesla's decode error.
 - Replace Poison response mapping with an internal mapper that preserves nested
   structs, missing/null fields, schema defaults, and unknown-field handling.
 - Use native `JSON` for HTTP encoding/decoding; retain Jason support for response
