@@ -98,21 +98,27 @@ config :plaid,
   root_uri: "https://development.plaid.com/",
   client_id: "your_client_id",
   secret: "your_secret",
-  adapter: Tesla.Adapter.Hackney, # optional
+  adapter: Tesla.Adapter.Httpc, # optional
   middleware: [Tesla.Middleware.Logger], # optional
-  http_options: [timeout: 10_000, recv_timeout: 30_000] # optional
+  http_options: [timeout: 30_000, connect_timeout: 10_000] # optional
 ```
 
 By default, `root_uri` is set by `mix` environment. You can override it in your config.
 * `dev` - https://development.plaid.com/
 * `prod` - https://production.plaid.com/
 
-Finally, you can specify your HTTP client of choice with `adapter` key. The adapter is passed to [Tesla](https://github.com/teamon/tesla) and [hackney](https://github.com/benoitc/hackney) is the default adapter if this
-configuration is omitted.
+Finally, you can specify your HTTP client of choice with `adapter` key. The adapter is passed to [Tesla](https://github.com/teamon/tesla) and Erlang's built-in
+[httpc](https://www.erlang.org/doc/apps/inets/httpc.html) (`Tesla.Adapter.Httpc`) is the default adapter if this
+configuration is omitted. On Erlang/OTP 27+, httpc verifies server certificates against the operating system's
+trusted CA certificates, so no extra dependency is needed. To use another client, such as
+[hackney](https://github.com/benoitc/hackney), add it to your own dependencies and set
+`adapter: Tesla.Adapter.Hackney`.
 
-The `http_options` key specifies the custom configuration for your HTTP client adapter. It's recommended you
-extend the receive timeout for Plaid, especially for retrieving historical transactions. In the code
-snippet above, `[timeout: 10_000, recv_timeout: 30_000]` are timeout options understood by hackney.
+The `http_options` key specifies the custom configuration for your HTTP client adapter. httpc has no request
+timeout of its own, so when httpc is the adapter, this library sets `timeout` to 30 seconds unless you set it
+yourself. Make sure your timeout leaves Plaid enough time, especially for retrieving historical transactions.
+In the code snippet above, `[timeout: 30_000, connect_timeout: 10_000]` are timeout options understood by httpc. If you pass `ssl` options to httpc, they replace its certificate verification
+defaults, so build them on top of `:httpc.ssl_verify_host_options(true)`.
 
 ## Runtime configuration
 
@@ -130,13 +136,13 @@ Plaid.Accounts.get(
 ```
 
 HTTP client options may also be passed to the configuration at runtime. This can be
-useful if you'd like to extend the receive timeout for certain calls to Plaid.
+useful if you'd like to extend the timeout for certain calls to Plaid.
 HTTP client options will need to conform to the selected HTTP adapter.
 
 ```elixir
 Plaid.Transactions.get(
   %{access_token: "my-token"},
-  %{http_options: [recv_timeout: 10_000]}
+  %{http_options: [timeout: 60_000]}
 )
 ```
 

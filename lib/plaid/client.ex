@@ -53,7 +53,8 @@ defmodule Plaid.Client do
   - secret
   - `Tesla.Adapter`
   - `Tesla.Middleware`
-  - HTTP options for selected `Tesla.Adapter`
+  - HTTP options for selected `Tesla.Adapter`. With `Tesla.Adapter.Httpc`,
+    `timeout` defaults to 30 seconds.
 
   Example
   ```
@@ -63,7 +64,7 @@ defmodule Plaid.Client do
     secret: "shhhh",
     adapter: Tesla.Adapter.Httpc,
     middleware: [Tesla.Middleware.Logger],
-    http_options: [recv_timeout: 10_000]
+    http_options: [timeout: 10_000]
   }
 
   client = Client.new(config)
@@ -86,9 +87,9 @@ defmodule Plaid.Client do
         {Tesla.Middleware.Telemetry, get_metadata(config)}
       ] ++ get_middleware(config)
 
-    adapter = {get_adapter(config), get_http_options(config)}
+    adapter = get_adapter(config)
 
-    Tesla.client(middleware, adapter)
+    Tesla.client(middleware, {adapter, get_http_options(adapter, config)})
   end
 
   defp get_base_url(config) do
@@ -143,13 +144,17 @@ defmodule Plaid.Client do
   end
 
   defp get_adapter(config) do
-    config[:adapter] || Application.get_env(:plaid, :adapter) || Tesla.Adapter.Hackney
+    config[:adapter] || Application.get_env(:plaid, :adapter) || Tesla.Adapter.Httpc
   end
 
-  defp get_http_options(config) do
-    Keyword.merge(
-      Application.get_env(:plaid, :http_options, []),
-      config[:http_options] || []
-    )
+  defp get_http_options(adapter, config) do
+    adapter
+    |> default_http_options()
+    |> Keyword.merge(Application.get_env(:plaid, :http_options, []))
+    |> Keyword.merge(config[:http_options] || [])
   end
+
+  # httpc waits forever for a response unless given a timeout.
+  defp default_http_options(Tesla.Adapter.Httpc), do: [timeout: 30_000]
+  defp default_http_options(_adapter), do: []
 end

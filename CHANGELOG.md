@@ -8,6 +8,13 @@
   struct serialization. Native codec errors replace Jason-specific errors for
   malformed JSON and unsupported request values (see the README).
 - Require Elixir 1.18+, Erlang/OTP 27+, and Tesla 1.14+.
+- Make hackney an optional dependency and use Erlang's built-in httpc
+  (`Tesla.Adapter.Httpc`) as the default adapter. httpc verifies certificates
+  by default on OTP 27+. With httpc, `timeout` defaults to 30 seconds and can
+  be changed through `http_options`. httpc ignores hackney options such as
+  `recv_timeout`, so apps that relied on hackney options should switch to
+  httpc's `timeout` and `connect_timeout`, or add `:hackney` to their own
+  dependencies and set `adapter: Tesla.Adapter.Hackney`.
 - Align the standalone Tesla/Hackney lock versions with Alto and refresh their
   required transitive dependencies. Update the Cowboy/Cowlib test dependencies
   for OTP 29 compatibility. Alto's HTTP dependency versions are unchanged.
