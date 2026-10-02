@@ -266,24 +266,43 @@ defmodule Plaid.ClientTest do
       # uses default
       client = Client.new()
 
-      assert client.adapter == {Tesla.Adapter.Hackney, :call, [[]]}
+      assert {Tesla.Adapter.Httpc, :call, _} = client.adapter
 
       # reads from app env
       Application.put_env(:plaid, :adapter, Tesla.Adapter.Httpc)
-      Application.put_env(:plaid, :http_options, recv_timeout: 12_345)
+      Application.put_env(:plaid, :http_options, timeout: 12_345)
 
       client = Client.new()
 
-      assert client.adapter == {Tesla.Adapter.Httpc, :call, [[recv_timeout: 12_345]]}
+      assert client.adapter == {Tesla.Adapter.Httpc, :call, [[timeout: 12_345]]}
 
       # takes runtime configuration
-      client = Client.new(%{adapter: Tesla.Adapter.Mint, http_options: [recv_timeout: 67_890]})
+      client = Client.new(%{adapter: Tesla.Adapter.Mint, http_options: [timeout: 67_890]})
 
-      assert client.adapter == {Tesla.Adapter.Mint, :call, [[recv_timeout: 67_890]]}
+      assert client.adapter == {Tesla.Adapter.Mint, :call, [[timeout: 67_890]]}
 
       # cleanup
       Application.delete_env(:plaid, :adapter)
       Application.delete_env(:plaid, :http_options)
+    end
+
+    test "httpc adapter gets a default timeout" do
+      client = Client.new()
+
+      assert client.adapter == {Tesla.Adapter.Httpc, :call, [[timeout: 30_000]]}
+    end
+
+    test "httpc default timeout is kept alongside other http options" do
+      client = Client.new(%{http_options: [connect_timeout: 5_000]})
+
+      assert client.adapter ==
+               {Tesla.Adapter.Httpc, :call, [[timeout: 30_000, connect_timeout: 5_000]]}
+    end
+
+    test "other adapters do not get a default timeout" do
+      client = Client.new(%{adapter: Tesla.Adapter.Mint})
+
+      assert client.adapter == {Tesla.Adapter.Mint, :call, [[]]}
     end
   end
 end
