@@ -7,6 +7,9 @@ defmodule Plaid do
 
   alias Plaid.Client.Request
 
+  # Proxy error pages can be large, and the error message often ends up in logs.
+  @max_error_body_bytes 1_000
+
   defmodule MissingClientIdError do
     defexception message: """
                  The `client_id` is required for calls to Plaid. Please either configure `client_id`
@@ -74,12 +77,27 @@ defmodule Plaid do
     {:ok, mapper.(env.body)}
   end
 
-  def handle_response({:ok, %Tesla.Env{} = env}, _mapper) do
-    error = Plaid.ResponseMapper.transform(env.body, %Plaid.Error{})
-    {:error, %{error | http_code: env.status}}
+  def handle_response({:ok, %Tesla.Env{status: status, body: body}}, _mapper) when is_map(body) do
+    error = Plaid.ResponseMapper.transform(body, %Plaid.Error{})
+    {:error, %{error | http_code: status}}
+  end
+
+  def handle_response({:ok, %Tesla.Env{status: status, body: body}}, _mapper) do
+    {:error, %Plaid.Error{http_code: status, error_message: error_message_from_body(body)}}
   end
 
   def handle_response({:error, _reason} = error, _mapper) do
     error
   end
+
+  # Plaid.Error derives Jason.Encoder, so the message must be valid UTF-8. Cutting
+  # by bytes can split a character, which String.replace_invalid/1 then cleans up.
+  defp error_message_from_body(body)
+       when is_binary(body) and byte_size(body) > @max_error_body_bytes do
+    String.replace_invalid(binary_part(body, 0, @max_error_body_bytes)) <> "..."
+  end
+
+  defp error_message_from_body(body) when is_binary(body), do: String.replace_invalid(body)
+  defp error_message_from_body(nil), do: nil
+  defp error_message_from_body(body), do: body |> inspect() |> error_message_from_body()
 end
