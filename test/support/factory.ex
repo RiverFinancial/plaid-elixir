@@ -292,6 +292,16 @@ defmodule Plaid.Factory do
           "primary_color" => "#c02f27",
           "products" => ["assets", "auth", "balance", "transactions", "income", "identity"],
           "routing_numbers" => [],
+          "dtc_numbers" => ["2236", "0955"],
+          "connection_availability" => "SUPPORTED",
+          "auth_metadata" => %{
+            "supported_methods" => %{
+              "instant_auth" => true,
+              "instant_match" => false,
+              "automated_micro_deposits" => true,
+              "instant_micro_deposits" => false
+            }
+          },
           "status" => %{
             "auth" => %{
               "breakdown" => %{
@@ -368,6 +378,9 @@ defmodule Plaid.Factory do
         "primary_color" => "#004966",
         "products" => ["assets", "auth", "balance", "transactions", "income", "identity"],
         "routing_numbers" => [],
+        "dtc_numbers" => [],
+        "connection_availability" => "NOT_SUPPORTED",
+        "auth_metadata" => nil,
         "status" => %{
           "auth" => %{
             "breakdown" => %{

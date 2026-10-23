@@ -2,6 +2,7 @@
 
 ## Unreleased (River fork)
 
+- Add `dtc_numbers`, `connection_availability`, and `auth_metadata` (`supported_methods`; returned with `options: %{include_auth_metadata: true}`) to `Plaid.Institutions.Institution`.
 - Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
   Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
   ported to the fork's native JSON response mapper. Upstream's
