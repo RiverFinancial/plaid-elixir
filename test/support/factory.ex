@@ -2072,4 +2072,60 @@ defmodule Plaid.Factory do
       "request_id" => "45QSn"
     }
   end
+
+  def http_response_body(:layer_session_token) do
+    %{
+      "link" => %{
+        "link_token" => "link-sandbox-af1a0311-da53-4636-b754-dd15cc058176",
+        "expiration" => "2026-10-23T12:00:00Z",
+        "user_id" => "usr_9nSp2KuZ2x4JDw"
+      },
+      "request_id" => "XQVgFigpGHXkb0b"
+    }
+  end
+
+  def http_response_body(:layer_user_account_session) do
+    edit_counts = %{
+      "edits_current" => 0,
+      "edits_1d" => 1,
+      "edits_30d" => 2,
+      "edits_365d" => 3,
+      "edits_all_time" => 4
+    }
+
+    %{
+      "identity" => %{
+        "name" => %{"first_name" => "Leslie", "last_name" => "Knope"},
+        "address" => %{
+          "street" => "123 Main St.",
+          "street2" => nil,
+          "city" => "Pawnee",
+          "region" => "IN",
+          "postal_code" => "41006",
+          "country" => "US"
+        },
+        "email" => "leslie@knope.com",
+        "phone_number" => "+14157890000",
+        "date_of_birth" => "1979-01-01",
+        "ssn" => "987654321",
+        "ssn_last_4" => "4321"
+      },
+      "identity_edit_history" => %{
+        "name" => edit_counts,
+        "address" => edit_counts,
+        "email" => edit_counts,
+        "date_of_birth" => edit_counts,
+        "official_document" => %{"ssn" => edit_counts}
+      },
+      "items" => [
+        %{
+          "item_id" => "Ed6bjNrDLJfGvZWwnkQlfxwoNz54B5C97ejBr",
+          "access_token" => "access-sandbox-435beced-94e8-4df3-a181-1dde1cfa19f0"
+        }
+      ],
+      "link_session_id" => "1daca4d5-9a0d-4e85-a2e9-1e905ecaa32e",
+      "idv_session_status" => "success",
+      "request_id" => "m8MDnv9okwxFNBV"
+    }
+  end
 end

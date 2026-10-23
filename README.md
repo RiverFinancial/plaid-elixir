@@ -31,6 +31,7 @@ Supported Plaid products:
 - [x] Assets
 - [x] Investments
 - [x] Signal
+- [x] Layer
 
 [Plaid Documentation](https://plaid.com/docs/api)
 
