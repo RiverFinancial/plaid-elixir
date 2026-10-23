@@ -2,6 +2,12 @@
 
 ## Unreleased (River fork)
 
+- Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
+  Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
+  ported to the fork's native JSON response mapper. Upstream's
+  `Plaid.Accounts.Account` fields (`verification_name`, `persistent_account_id`,
+  `holder_category`) and `Plaid.Item` fields (`products`, `consented_products`,
+  `institution_name`, `auth_method`) were already in the fork.
 - Non-2xx responses whose body is not a JSON object (proxy 502 HTML, Envoy
   plaintext) return `{:error, %Plaid.Error{http_code: status, error_message: body}}`
   instead of raising `BadMapError`. The message is capped at 1,000 bytes, invalid
