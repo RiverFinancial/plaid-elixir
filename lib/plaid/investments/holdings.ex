@@ -79,7 +79,11 @@ defmodule Plaid.Investments.Holdings do
       %Plaid.Investments.Holdings{
         accounts: [
           %Plaid.Accounts.Account{
-            balances: %Plaid.Accounts.Account.Balance{}
+            balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            }
           }
         ],
         securities: [%Plaid.Investments.Security{}],
