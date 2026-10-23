@@ -18,6 +18,8 @@ defmodule Plaid.Item do
             item_id: nil,
             webhook: nil,
             consent_expiration_time: nil,
+            update_type: nil,
+            paired_item_id: nil,
             request_id: nil,
             status: nil
 
@@ -33,6 +35,8 @@ defmodule Plaid.Item do
           item_id: String.t(),
           webhook: String.t(),
           consent_expiration_time: String.t(),
+          update_type: String.t() | nil,
+          paired_item_id: String.t() | nil,
           request_id: String.t(),
           status: Plaid.Item.Status.t()
         }
