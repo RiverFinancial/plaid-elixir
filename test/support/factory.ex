@@ -1339,7 +1339,75 @@ defmodule Plaid.Factory do
         },
         "redirect_uri" => "https://example.com/redirect",
         "client_name" => "Example Client Name"
-      }
+      },
+      "link_sessions" => [
+        %{
+          "link_session_id" => "356dbb28-7f98-44d1-8e6d-0cec580f3171",
+          "started_at" => "2020-03-26T12:57:00Z",
+          "finished_at" => "2020-03-26T12:58:00Z",
+          "exit" => %{
+            "error" => %{
+              "error_type" => "ITEM_ERROR",
+              "error_code" => "INVALID_CREDENTIALS",
+              "error_message" => "the provided credentials were not correct"
+            },
+            "metadata" => %{
+              "status" => "requires_credentials",
+              "link_session_id" => "356dbb28-7f98-44d1-8e6d-0cec580f3171",
+              "request_id" => "Uvz5bhK7lDDNb3C"
+            }
+          },
+          "events" => [
+            %{
+              "event_name" => "SELECT_INSTITUTION",
+              "timestamp" => "2020-03-26T12:57:05Z",
+              "event_id" => "7a3f1b2c-0d4e-4f5a-9b6c-1d2e3f4a5b6c",
+              "event_metadata" => %{
+                "institution_id" => "ins_3",
+                "institution_name" => "Chase",
+                "institution_search_query" => "chase",
+                "request_id" => "Uvz5bhK7lDDNb3C",
+                "view_name" => "SELECT_INSTITUTION"
+              }
+            },
+            %{
+              "event_name" => "ERROR",
+              "timestamp" => "2020-03-26T12:57:30Z",
+              "event_id" => "8b4f2c3d-1e5f-4a6b-8c7d-2e3f4a5b6c7d",
+              "event_metadata" => %{
+                "error_code" => "INVALID_CREDENTIALS",
+                "error_message" => "the provided credentials were not correct",
+                "error_type" => "ITEM_ERROR",
+                "mfa_type" => "code",
+                "routing_number" => "021000021",
+                "account_number_mask" => "0000"
+              }
+            }
+          ],
+          "results" => %{
+            "item_add_results" => [
+              %{
+                "public_token" => "public-sandbox-5c224a01-8314-4491-a06f-39e193d5cddc",
+                "accounts" => [
+                  %{
+                    "id" => "blgvvBlXw3cq5GMPwqB6s6q4dLKB9WcVqGDGo",
+                    "name" => "Plaid Checking",
+                    "mask" => "0000",
+                    "type" => "depository",
+                    "subtype" => "checking"
+                  }
+                ],
+                "institution" => %{"name" => "Chase", "institution_id" => "ins_3"}
+              }
+            ],
+            "cra_item_add_results" => [],
+            "cra_update_results" => [],
+            "bank_income_results" => [],
+            "payroll_income_results" => [],
+            "document_income_results" => nil
+          }
+        }
+      ]
     }
   end
 
