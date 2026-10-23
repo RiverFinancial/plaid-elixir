@@ -52,6 +52,9 @@ defmodule Plaid.AuthTest do
       assert Plaid.Auth == ds.__struct__
       assert Plaid.Accounts.Account == List.first(ds.accounts).__struct__
       assert Plaid.Item == ds.item.__struct__
+
+      assert %Plaid.Auth.Numbers.ACH{can_transfer_in: true, can_transfer_out: false} =
+               List.first(ds.numbers.ach)
     end
 
     @tag :integration

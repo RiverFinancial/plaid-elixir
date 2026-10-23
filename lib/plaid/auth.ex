@@ -47,14 +47,22 @@ defmodule Plaid.Auth do
       """
 
       @derive Jason.Encoder
-      defstruct account: nil, account_id: nil, routing: nil, wire_routing: nil, is_tokenized_account_number: false
+      defstruct account: nil,
+                account_id: nil,
+                routing: nil,
+                wire_routing: nil,
+                is_tokenized_account_number: false,
+                can_transfer_in: nil,
+                can_transfer_out: nil
 
       @type t :: %__MODULE__{
               account: String.t(),
               account_id: String.t(),
               routing: String.t(),
               wire_routing: String.t(),
-              is_tokenized_account_number: boolean()
+              is_tokenized_account_number: boolean(),
+              can_transfer_in: boolean() | nil,
+              can_transfer_out: boolean() | nil
             }
     end
 

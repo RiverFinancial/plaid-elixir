@@ -89,7 +89,9 @@ defmodule Plaid.Factory do
             "account" => "9900009606",
             "account_id" => "vzeNDwK7KQIm4yEog683uElbp9GRLEFXGK98D",
             "routing" => "011401533",
-            "wire_routing" => "021000021"
+            "wire_routing" => "021000021",
+            "can_transfer_in" => true,
+            "can_transfer_out" => false
           }
         ],
         "eft" => [
