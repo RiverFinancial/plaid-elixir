@@ -62,14 +62,16 @@ defmodule Plaid.Accounts do
                 current: nil,
                 limit: nil,
                 iso_currency_code: nil,
-                unofficial_currency_code: nil
+                unofficial_currency_code: nil,
+                last_updated_datetime: nil
 
       @type t :: %__MODULE__{
               available: float,
               current: float,
               limit: float,
               iso_currency_code: String.t(),
-              unofficial_currency_code: String.t()
+              unofficial_currency_code: String.t(),
+              last_updated_datetime: String.t() | nil
             }
     end
 

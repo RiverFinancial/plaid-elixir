@@ -59,6 +59,8 @@ defmodule Plaid.AccountsTest do
       assert Plaid.Accounts.Account == first.__struct__
       assert first.verification_name == "Account A"
       assert first.persistent_account_id == "pa_0001"
+      assert first.balances.last_updated_datetime == nil
+      assert Enum.at(ds.accounts, 1).balances.last_updated_datetime == "2026-10-22T14:05:00Z"
       assert Plaid.Item == ds.item.__struct__
     end
 
