@@ -8,6 +8,7 @@
 - Add `update_type` and `paired_item_id` to `Plaid.Item`.
 - Add `link_sessions` (`Plaid.Link.Session` with `exit`, `events`, `results`) to the `/link/token/get` response.
 - Add `Plaid.Layer` with `create_session_token/2` (`/session/token/create`) and `get_user_account_session/2` (`/user_account/session/get`).
+- Add `result` and `triggered_rule_details` (`Plaid.Signal.Ruleset.TriggeredRuleDetails`) to `Plaid.Signal.Ruleset`.
 - Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
   Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
   ported to the fork's native JSON response mapper. Upstream's

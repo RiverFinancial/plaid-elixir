@@ -1898,6 +1898,11 @@ defmodule Plaid.Factory do
       ],
       "ruleset" => %{
         "ruleset_key" => "mock",
+        "result" => "ACCEPT",
+        "triggered_rule_details" => %{
+          "internal_note" => "Account appears to be in good standing.",
+          "custom_action_key" => "3-day-hold"
+        },
         "outcome" => "accept"
       },
       "request_id" => "mdqfuVxeoza6mhu"

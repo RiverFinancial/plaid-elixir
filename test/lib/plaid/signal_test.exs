@@ -77,7 +77,9 @@ defmodule Plaid.SignalTest do
                 bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
               },
               warnings: [%Plaid.Signal.Warning{}],
-              ruleset: %Plaid.Signal.Ruleset{}
+              ruleset: %Plaid.Signal.Ruleset{
+                triggered_rule_details: %Plaid.Signal.Ruleset.TriggeredRuleDetails{}
+              }
             })
   end
 
@@ -117,7 +119,12 @@ defmodule Plaid.SignalTest do
         })),
         ruleset: %Plaid.Signal.Ruleset{
           outcome: body["ruleset"]["outcome"],
-          ruleset_key: body["ruleset"]["ruleset_key"]
+          ruleset_key: body["ruleset"]["ruleset_key"],
+          result: body["ruleset"]["result"],
+          triggered_rule_details: %Plaid.Signal.Ruleset.TriggeredRuleDetails{
+            internal_note: body["ruleset"]["triggered_rule_details"]["internal_note"],
+            custom_action_key: body["ruleset"]["triggered_rule_details"]["custom_action_key"]
+          }
         },
         request_id: body["request_id"]
       }
