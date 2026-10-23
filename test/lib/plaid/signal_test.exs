@@ -30,7 +30,8 @@ defmodule Plaid.SignalTest do
     },
     "device" => %{
       "ip_address" => "198.30.2.2",
-      "user_agent" => "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1"
+      "user_agent" =>
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1"
     },
     "user_present" => true
   }
@@ -72,15 +73,15 @@ defmodule Plaid.SignalTest do
   test "signal data structure encodes with Jason" do
     assert {:ok, _} =
              Jason.encode(%Plaid.Signal{
-              scores: %Plaid.Signal.Scores{
-                customer_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
-                bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
-              },
-              warnings: [%Plaid.Signal.Warning{}],
-              ruleset: %Plaid.Signal.Ruleset{
-                triggered_rule_details: %Plaid.Signal.Ruleset.TriggeredRuleDetails{}
-              }
-            })
+               scores: %Plaid.Signal.Scores{
+                 customer_initiated_return_risk: %Plaid.Signal.Scores.Risk{},
+                 bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{}
+               },
+               warnings: [%Plaid.Signal.Warning{}],
+               ruleset: %Plaid.Signal.Ruleset{
+                 triggered_rule_details: %Plaid.Signal.Ruleset.TriggeredRuleDetails{}
+               }
+             })
   end
 
   describe "signal evaluate/2" do
@@ -112,11 +113,15 @@ defmodule Plaid.SignalTest do
           }
         },
         core_attributes: body["core_attributes"],
-        warnings: body["warnings"] |> Enum.map(&(%Plaid.Signal.Warning{
-          warning_code: &1["warning_code"],
-          warning_type: &1["warning_type"],
-          warning_message: &1["warning_message"],
-        })),
+        warnings:
+          body["warnings"]
+          |> Enum.map(
+            &%Plaid.Signal.Warning{
+              warning_code: &1["warning_code"],
+              warning_type: &1["warning_type"],
+              warning_message: &1["warning_message"]
+            }
+          ),
         ruleset: %Plaid.Signal.Ruleset{
           outcome: body["ruleset"]["outcome"],
           ruleset_key: body["ruleset"]["ruleset_key"],
@@ -193,10 +198,11 @@ defmodule Plaid.SignalTest do
         {:ok, mapper.(body)}
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_decision(
-        @report_decision_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.report_decision(
+                 @report_decision_params,
+                 config
+               )
     end
 
     @tag :integration
@@ -218,10 +224,11 @@ defmodule Plaid.SignalTest do
         |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_decision(
-        @report_decision_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.report_decision(
+                 @report_decision_params,
+                 config
+               )
     end
 
     @tag :integration
@@ -242,10 +249,11 @@ defmodule Plaid.SignalTest do
         |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
-      assert {:error, %Plaid.Error{}} = Plaid.Signal.report_decision(
-        @report_decision_params,
-        config
-      )
+      assert {:error, %Plaid.Error{}} =
+               Plaid.Signal.report_decision(
+                 @report_decision_params,
+                 config
+               )
     end
   end
 
@@ -267,10 +275,11 @@ defmodule Plaid.SignalTest do
         {:ok, mapper.(body)}
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_return(
-        @report_return_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.report_return(
+                 @report_return_params,
+                 config
+               )
     end
 
     @tag :integration
@@ -292,10 +301,11 @@ defmodule Plaid.SignalTest do
         |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.report_return(
-        @report_return_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.report_return(
+                 @report_return_params,
+                 config
+               )
     end
 
     @tag :integration
@@ -316,10 +326,11 @@ defmodule Plaid.SignalTest do
         |> Plug.Conn.resp(400, JSON.encode!(body))
       end)
 
-      assert {:error, %Plaid.Error{}} = Plaid.Signal.report_return(
-        @report_return_params,
-        config
-      )
+      assert {:error, %Plaid.Error{}} =
+               Plaid.Signal.report_return(
+                 @report_return_params,
+                 config
+               )
     end
   end
 
@@ -341,10 +352,11 @@ defmodule Plaid.SignalTest do
         {:ok, mapper.(body)}
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.prepare(
-        @prepare_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.prepare(
+                 @prepare_params,
+                 config
+               )
     end
 
     @tag :integration
@@ -366,10 +378,11 @@ defmodule Plaid.SignalTest do
         |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
-      assert {:ok, %{request_id: ^request_id}} = Plaid.Signal.prepare(
-        @prepare_params,
-        config
-      )
+      assert {:ok, %{request_id: ^request_id}} =
+               Plaid.Signal.prepare(
+                 @prepare_params,
+                 config
+               )
     end
 
     @tag :integration
