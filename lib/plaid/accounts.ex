@@ -35,6 +35,7 @@ defmodule Plaid.Accounts do
               type: nil,
               subtype: nil,
               verification_status: nil,
+              verification_insights: nil,
               holder_category: nil
 
     @type t :: %__MODULE__{
@@ -49,8 +50,60 @@ defmodule Plaid.Accounts do
             type: String.t(),
             subtype: String.t(),
             verification_status: String.t(),
+            verification_insights: Plaid.Accounts.Account.VerificationInsights.t() | nil,
             holder_category: String.t() | nil
           }
+
+    defmodule VerificationInsights do
+      @moduledoc """
+      Plaid Account Verification Insights data structure.
+
+      Returned for Auth Items verified with Database Auth.
+      `account_number_format` is one of `"valid"`, `"invalid"` or `"unknown"`.
+      """
+
+      @derive Jason.Encoder
+      defstruct name_match_score: nil,
+                network_status: nil,
+                previous_returns: nil,
+                account_number_format: nil
+
+      @type t :: %__MODULE__{
+              name_match_score: integer() | nil,
+              network_status: Plaid.Accounts.Account.VerificationInsights.NetworkStatus.t() | nil,
+              previous_returns:
+                Plaid.Accounts.Account.VerificationInsights.PreviousReturns.t() | nil,
+              account_number_format: String.t() | nil
+            }
+
+      defmodule NetworkStatus do
+        @moduledoc """
+        Plaid Account Verification Insights Network Status data structure.
+        """
+
+        @derive Jason.Encoder
+        defstruct has_numbers_match: nil,
+                  is_numbers_match_verified: nil
+
+        @type t :: %__MODULE__{
+                has_numbers_match: boolean() | nil,
+                is_numbers_match_verified: boolean() | nil
+              }
+      end
+
+      defmodule PreviousReturns do
+        @moduledoc """
+        Plaid Account Verification Insights Previous Returns data structure.
+        """
+
+        @derive Jason.Encoder
+        defstruct has_previous_administrative_return: nil
+
+        @type t :: %__MODULE__{
+                has_previous_administrative_return: boolean() | nil
+              }
+      end
+    end
 
     defmodule Balance do
       @moduledoc """
@@ -183,6 +236,10 @@ defmodule Plaid.Accounts do
         accounts: [
           %Plaid.Accounts.Account{
             balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            },
             owners: [
               %Plaid.Accounts.Account.Owner{
                 addresses: [%Plaid.Accounts.Account.Owner.Address{}],
