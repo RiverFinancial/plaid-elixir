@@ -2,6 +2,7 @@
 
 ## Unreleased (River fork)
 
+- Add `Plaid.Layer` with `create_session_token/2` (`/session/token/create`) and `get_user_account_session/2` (`/user_account/session/get`).
 - Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
   Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
   ported to the fork's native JSON response mapper. Upstream's
