@@ -56,12 +56,31 @@ defmodule Plaid.Signal do
 
     @derive Jason.Encoder
     defstruct ruleset_key: nil,
+              result: nil,
+              triggered_rule_details: nil,
               outcome: nil
 
     @type t :: %__MODULE__{
             ruleset_key: String.t(),
+            result: String.t(),
+            triggered_rule_details: Plaid.Signal.Ruleset.TriggeredRuleDetails.t() | nil,
             outcome: String.t()
           }
+
+    defmodule TriggeredRuleDetails do
+      @moduledoc """
+      Plaid Signal Ruleset triggered rule details data structure.
+      """
+
+      @derive Jason.Encoder
+      defstruct internal_note: nil,
+                custom_action_key: nil
+
+      @type t :: %__MODULE__{
+              internal_note: String.t() | nil,
+              custom_action_key: String.t() | nil
+            }
+    end
   end
 
   defmodule Warning do
@@ -203,7 +222,9 @@ defmodule Plaid.Signal do
           bank_initiated_return_risk: %Plaid.Signal.Scores.Risk{}
         },
         warnings: [%Plaid.Signal.Warning{}],
-        ruleset: %Plaid.Signal.Ruleset{}
+        ruleset: %Plaid.Signal.Ruleset{
+          triggered_rule_details: %Plaid.Signal.Ruleset.TriggeredRuleDetails{}
+        }
       }
     )
   end

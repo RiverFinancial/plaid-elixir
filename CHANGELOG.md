@@ -2,6 +2,7 @@
 
 ## Unreleased (River fork)
 
+- Add `result` and `triggered_rule_details` (`Plaid.Signal.Ruleset.TriggeredRuleDetails`) to `Plaid.Signal.Ruleset`.
 - Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
   Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
   ported to the fork's native JSON response mapper. Upstream's
