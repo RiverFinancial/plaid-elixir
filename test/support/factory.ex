@@ -147,7 +147,9 @@ defmodule Plaid.Factory do
         "institution_name" => "Chase",
         "auth_method" => "oauth",
         "item_id" => "Ed6bjNrDLJfGvZWwnkQlfxwoNz54B5C97ejBr",
-        "webhook" => "https://plaid.com/example/hook"
+        "webhook" => "https://plaid.com/example/hook",
+        "update_type" => "background",
+        "paired_item_id" => "pAiReDiTeMiD9xZqLwKvBnMeRtYuIoPaSdFg"
       },
       "request_id" => "qpCtl",
       "status" => %{

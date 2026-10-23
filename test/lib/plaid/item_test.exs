@@ -55,6 +55,8 @@ defmodule Plaid.ItemTest do
       assert is_list(ds.consented_products)
       assert is_binary(ds.institution_name)
       assert is_binary(ds.auth_method)
+      assert ds.update_type == "background"
+      assert ds.paired_item_id == "pAiReDiTeMiD9xZqLwKvBnMeRtYuIoPaSdFg"
     end
 
     @tag :integration
