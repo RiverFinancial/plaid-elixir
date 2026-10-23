@@ -47,6 +47,10 @@ defmodule Plaid.Identity do
         accounts: [
           %Plaid.Accounts.Account{
             balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            },
             owners: [
               %Plaid.Accounts.Account.Owner{
                 addresses: [%Plaid.Accounts.Account.Owner.Address{}],

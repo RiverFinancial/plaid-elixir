@@ -21,6 +21,17 @@ defmodule Plaid.Factory do
           "subtype" => "checking",
           "type" => "depository",
           "verification_status" => nil,
+          "verification_insights" => %{
+            "name_match_score" => 70,
+            "network_status" => %{
+              "has_numbers_match" => true,
+              "is_numbers_match_verified" => true
+            },
+            "previous_returns" => %{
+              "has_previous_administrative_return" => false
+            },
+            "account_number_format" => "valid"
+          },
           "holder_category" => "individual"
         },
         %{
@@ -1158,6 +1169,17 @@ defmodule Plaid.Factory do
           ],
           "subtype" => "checking",
           "type" => "depository",
+          "verification_insights" => %{
+            "name_match_score" => 70,
+            "network_status" => %{
+              "has_numbers_match" => true,
+              "is_numbers_match_verified" => true
+            },
+            "previous_returns" => %{
+              "has_previous_administrative_return" => false
+            },
+            "account_number_format" => "valid"
+          },
           "holder_category" => "individual"
         },
         %{

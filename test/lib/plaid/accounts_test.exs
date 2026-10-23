@@ -59,6 +59,19 @@ defmodule Plaid.AccountsTest do
       assert Plaid.Accounts.Account == first.__struct__
       assert first.verification_name == "Account A"
       assert first.persistent_account_id == "pa_0001"
+
+      assert %Plaid.Accounts.Account.VerificationInsights{
+               name_match_score: 70,
+               network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{
+                 has_numbers_match: true,
+                 is_numbers_match_verified: true
+               },
+               previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{
+                 has_previous_administrative_return: false
+               },
+               account_number_format: "valid"
+             } = List.first(ds.accounts).verification_insights
+
       assert Plaid.Item == ds.item.__struct__
     end
 
@@ -126,6 +139,19 @@ defmodule Plaid.AccountsTest do
       assert Plaid.Accounts.Account == first.__struct__
       assert first.verification_name == "Account A"
       assert first.persistent_account_id == "pa_0001"
+
+      assert %Plaid.Accounts.Account.VerificationInsights{
+               name_match_score: 70,
+               network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{
+                 has_numbers_match: true,
+                 is_numbers_match_verified: true
+               },
+               previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{
+                 has_previous_administrative_return: false
+               },
+               account_number_format: "valid"
+             } = List.first(ds.accounts).verification_insights
+
       assert Plaid.Item == ds.item.__struct__
     end
 
