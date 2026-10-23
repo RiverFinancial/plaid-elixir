@@ -41,7 +41,8 @@ defmodule Plaid.Factory do
             "current" => 410,
             "limit" => 2000,
             "iso_currency_code" => "USD",
-            "unofficial_currency_code" => nil
+            "unofficial_currency_code" => nil,
+            "last_updated_datetime" => "2026-10-22T14:05:00Z"
           },
           "mask" => "3333",
           "name" => "Plaid Credit Card",

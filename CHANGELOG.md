@@ -4,6 +4,7 @@
 
 - Add nullable `can_transfer_in` and `can_transfer_out` to `Plaid.Auth.Numbers.ACH`.
 - Add `Plaid.Accounts.Account.verification_insights` (`name_match_score`, `network_status`, `previous_returns`, `account_number_format`), mapped for `/auth/get`, `/accounts/get` and `/identity/get`.
+- Add `last_updated_datetime` to `Plaid.Accounts.Account.Balance`.
 - Merge upstream `wfgilman/plaid-elixir` v3.4.0 and bump the version to 3.4.0.
   Adds `Plaid.IdentityVerification` (`create/2`, `get/2`, `list/2`, `retry/2`),
   ported to the fork's native JSON response mapper. Upstream's

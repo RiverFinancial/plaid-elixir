@@ -72,6 +72,8 @@ defmodule Plaid.AccountsTest do
                account_number_format: "valid"
              } = List.first(ds.accounts).verification_insights
 
+      assert first.balances.last_updated_datetime == nil
+      assert Enum.at(ds.accounts, 1).balances.last_updated_datetime == "2026-10-22T14:05:00Z"
       assert Plaid.Item == ds.item.__struct__
     end
 
