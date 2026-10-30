@@ -4,7 +4,6 @@ defmodule Plaid.Institutions do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct institutions: [], request_id: nil, total: nil
@@ -24,8 +23,11 @@ defmodule Plaid.Institutions do
     """
 
     @derive Jason.Encoder
-    defstruct country_codes: [],
+    defstruct auth_metadata: nil,
+              connection_availability: nil,
+              country_codes: [],
               credentials: [],
+              dtc_numbers: nil,
               has_mfa: nil,
               input_spec: nil,
               institution_id: nil,
@@ -42,8 +44,11 @@ defmodule Plaid.Institutions do
               url: nil
 
     @type t :: %__MODULE__{
+            auth_metadata: Plaid.Institutions.Institution.AuthMetadata.t() | nil,
+            connection_availability: String.t() | nil,
             country_codes: [String.t()],
             credentials: [Plaid.Institutions.Institution.Credentials.t()],
+            dtc_numbers: [String.t()] | nil,
             has_mfa: false | true,
             input_spec: String.t(),
             institution_id: String.t(),
@@ -59,6 +64,41 @@ defmodule Plaid.Institutions do
             status: Plaid.Institutions.Institution.Status.t(),
             url: String.t()
           }
+
+    defmodule AuthMetadata do
+      @moduledoc """
+      Plaid Institution Auth metadata data structure.
+
+      Returned when `include_auth_metadata: true` is passed in `options`.
+      """
+
+      @derive Jason.Encoder
+      defstruct supported_methods: nil
+
+      @type t :: %__MODULE__{
+              supported_methods:
+                Plaid.Institutions.Institution.AuthMetadata.SupportedMethods.t() | nil
+            }
+
+      defmodule SupportedMethods do
+        @moduledoc """
+        Plaid Institution Auth supported methods data structure.
+        """
+
+        @derive Jason.Encoder
+        defstruct instant_auth: nil,
+                  instant_match: nil,
+                  automated_micro_deposits: nil,
+                  instant_micro_deposits: nil
+
+        @type t :: %__MODULE__{
+                instant_auth: boolean() | nil,
+                instant_match: boolean() | nil,
+                automated_micro_deposits: boolean() | nil,
+                instant_micro_deposits: boolean() | nil
+              }
+      end
+    end
 
     defmodule Credentials do
       @moduledoc """
@@ -251,22 +291,21 @@ defmodule Plaid.Institutions do
 
   Parameters
   ```
-  %{count: 50, offset: 0}
+  %{count: 50, offset: 0, country_codes: ["US"], options: %{include_auth_metadata: true}}
   ```
+
+  `dtc_numbers` and `connection_availability` are always returned. Pass
+  `options: %{include_auth_metadata: true}` to populate `auth_metadata`.
   """
-  @spec get(params, config) :: {:ok, Plaid.Institutions.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Institutions.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     request_operation("institutions/get", params, config, &map_institutions(&1))
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 
   defp map_institutions(body) do
@@ -281,6 +320,9 @@ defmodule Plaid.Institutions do
 
   defp full_struct do
     %Plaid.Institutions.Institution{
+      auth_metadata: %Plaid.Institutions.Institution.AuthMetadata{
+        supported_methods: %Plaid.Institutions.Institution.AuthMetadata.SupportedMethods{}
+      },
       credentials: [%Plaid.Institutions.Institution.Credentials{}],
       status: %Plaid.Institutions.Institution.Status{
         item_logins: %Plaid.Institutions.Institution.Status.ItemLogins{
@@ -313,9 +355,14 @@ defmodule Plaid.Institutions do
 
   %{institution_id: "ins_109512", options: %{include_optional_metadata: true, include_status: false}}
   ```
+
+  `dtc_numbers` and `connection_availability` are always returned. Pass
+  `options: %{include_auth_metadata: true}` to populate `auth_metadata`.
+  `connection_availability` is `"NOT_SUPPORTED"` for institutions Plaid no longer
+  supports for new Items; only this endpoint returns them.
   """
   @spec get_by_id(String.t() | params, config) ::
-          {:ok, Plaid.Institutions.Institution.t()} | error
+          {:ok, Plaid.Institutions.Institution.t()} | error | Plaid.Response.t()
   def get_by_id(params, config \\ %{}) do
     params = if is_binary(params), do: %{institution_id: params}, else: params
 
@@ -329,8 +376,11 @@ defmodule Plaid.Institutions do
   ```
   %{query: "Wells", products: ["transactions"], options: %{limit: 40, include_display_data: true}}
   ```
+
+  `dtc_numbers` and `connection_availability` are always returned. Pass
+  `options: %{include_auth_metadata: true}` to populate `auth_metadata`.
   """
-  @spec search(params, config) :: {:ok, Plaid.Institutions.t()} | error
+  @spec search(params, config) :: {:ok, Plaid.Institutions.t()} | error | Plaid.Response.t()
   def search(params, config \\ %{}) do
     request_operation("institutions/search", params, config, &map_institutions(&1))
   end

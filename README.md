@@ -31,6 +31,7 @@ Supported Plaid products:
 - [x] Assets
 - [x] Investments
 - [x] Signal
+- [x] Layer
 
 [Plaid Documentation](https://plaid.com/docs/api)
 
@@ -247,3 +248,18 @@ Copyright (c) 2016 Will Gilman
 
 This work is free. You can redistribute it and/or modify it under the
 terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.
+
+### Decoded responses
+
+Endpoint functions return their usual `{:ok, value}` or `{:error, reason}` result.
+Pass `response_mode: :full` in the runtime config to also retain fields that are not
+represented by the endpoint structs:
+
+```elixir
+%Plaid.Response{result: {:ok, accounts}, body: decoded_body, status: 200} =
+  Plaid.Accounts.get(params, Map.put(config, :response_mode, :full))
+```
+
+The envelope also contains HTTP error bodies. For transport errors, `body` and
+`status` are `nil` and `result` contains the original error. Decoded bodies can
+contain credentials and identity data; redact them before storing or logging.

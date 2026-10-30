@@ -21,6 +21,17 @@ defmodule Plaid.Factory do
           "subtype" => "checking",
           "type" => "depository",
           "verification_status" => nil,
+          "verification_insights" => %{
+            "name_match_score" => 70,
+            "network_status" => %{
+              "has_numbers_match" => true,
+              "is_numbers_match_verified" => true
+            },
+            "previous_returns" => %{
+              "has_previous_administrative_return" => false
+            },
+            "account_number_format" => "valid"
+          },
           "holder_category" => "individual"
         },
         %{
@@ -30,7 +41,8 @@ defmodule Plaid.Factory do
             "current" => 410,
             "limit" => 2000,
             "iso_currency_code" => "USD",
-            "unofficial_currency_code" => nil
+            "unofficial_currency_code" => nil,
+            "last_updated_datetime" => "2026-10-22T14:05:00Z"
           },
           "mask" => "3333",
           "name" => "Plaid Credit Card",
@@ -89,7 +101,9 @@ defmodule Plaid.Factory do
             "account" => "9900009606",
             "account_id" => "vzeNDwK7KQIm4yEog683uElbp9GRLEFXGK98D",
             "routing" => "011401533",
-            "wire_routing" => "021000021"
+            "wire_routing" => "021000021",
+            "can_transfer_in" => true,
+            "can_transfer_out" => false
           }
         ],
         "eft" => [
@@ -133,7 +147,9 @@ defmodule Plaid.Factory do
         "institution_name" => "Chase",
         "auth_method" => "oauth",
         "item_id" => "Ed6bjNrDLJfGvZWwnkQlfxwoNz54B5C97ejBr",
-        "webhook" => "https://plaid.com/example/hook"
+        "webhook" => "https://plaid.com/example/hook",
+        "update_type" => "background",
+        "paired_item_id" => "pAiReDiTeMiD9xZqLwKvBnMeRtYuIoPaSdFg"
       },
       "request_id" => "qpCtl",
       "status" => %{
@@ -292,6 +308,16 @@ defmodule Plaid.Factory do
           "primary_color" => "#c02f27",
           "products" => ["assets", "auth", "balance", "transactions", "income", "identity"],
           "routing_numbers" => [],
+          "dtc_numbers" => ["2236", "0955"],
+          "connection_availability" => "SUPPORTED",
+          "auth_metadata" => %{
+            "supported_methods" => %{
+              "instant_auth" => true,
+              "instant_match" => false,
+              "automated_micro_deposits" => true,
+              "instant_micro_deposits" => false
+            }
+          },
           "status" => %{
             "auth" => %{
               "breakdown" => %{
@@ -368,6 +394,9 @@ defmodule Plaid.Factory do
         "primary_color" => "#004966",
         "products" => ["assets", "auth", "balance", "transactions", "income", "identity"],
         "routing_numbers" => [],
+        "dtc_numbers" => [],
+        "connection_availability" => "NOT_SUPPORTED",
+        "auth_metadata" => nil,
         "status" => %{
           "auth" => %{
             "breakdown" => %{
@@ -1158,6 +1187,17 @@ defmodule Plaid.Factory do
           ],
           "subtype" => "checking",
           "type" => "depository",
+          "verification_insights" => %{
+            "name_match_score" => 70,
+            "network_status" => %{
+              "has_numbers_match" => true,
+              "is_numbers_match_verified" => true
+            },
+            "previous_returns" => %{
+              "has_previous_administrative_return" => false
+            },
+            "account_number_format" => "valid"
+          },
           "holder_category" => "individual"
         },
         %{
@@ -1312,7 +1352,75 @@ defmodule Plaid.Factory do
         },
         "redirect_uri" => "https://example.com/redirect",
         "client_name" => "Example Client Name"
-      }
+      },
+      "link_sessions" => [
+        %{
+          "link_session_id" => "356dbb28-7f98-44d1-8e6d-0cec580f3171",
+          "started_at" => "2020-03-26T12:57:00Z",
+          "finished_at" => "2020-03-26T12:58:00Z",
+          "exit" => %{
+            "error" => %{
+              "error_type" => "ITEM_ERROR",
+              "error_code" => "INVALID_CREDENTIALS",
+              "error_message" => "the provided credentials were not correct"
+            },
+            "metadata" => %{
+              "status" => "requires_credentials",
+              "link_session_id" => "356dbb28-7f98-44d1-8e6d-0cec580f3171",
+              "request_id" => "Uvz5bhK7lDDNb3C"
+            }
+          },
+          "events" => [
+            %{
+              "event_name" => "SELECT_INSTITUTION",
+              "timestamp" => "2020-03-26T12:57:05Z",
+              "event_id" => "7a3f1b2c-0d4e-4f5a-9b6c-1d2e3f4a5b6c",
+              "event_metadata" => %{
+                "institution_id" => "ins_3",
+                "institution_name" => "Chase",
+                "institution_search_query" => "chase",
+                "request_id" => "Uvz5bhK7lDDNb3C",
+                "view_name" => "SELECT_INSTITUTION"
+              }
+            },
+            %{
+              "event_name" => "ERROR",
+              "timestamp" => "2020-03-26T12:57:30Z",
+              "event_id" => "8b4f2c3d-1e5f-4a6b-8c7d-2e3f4a5b6c7d",
+              "event_metadata" => %{
+                "error_code" => "INVALID_CREDENTIALS",
+                "error_message" => "the provided credentials were not correct",
+                "error_type" => "ITEM_ERROR",
+                "mfa_type" => "code",
+                "routing_number" => "021000021",
+                "account_number_mask" => "0000"
+              }
+            }
+          ],
+          "results" => %{
+            "item_add_results" => [
+              %{
+                "public_token" => "public-sandbox-5c224a01-8314-4491-a06f-39e193d5cddc",
+                "accounts" => [
+                  %{
+                    "id" => "blgvvBlXw3cq5GMPwqB6s6q4dLKB9WcVqGDGo",
+                    "name" => "Plaid Checking",
+                    "mask" => "0000",
+                    "type" => "depository",
+                    "subtype" => "checking"
+                  }
+                ],
+                "institution" => %{"name" => "Chase", "institution_id" => "ins_3"}
+              }
+            ],
+            "cra_item_add_results" => [],
+            "cra_update_results" => [],
+            "bank_income_results" => [],
+            "payroll_income_results" => [],
+            "document_income_results" => nil
+          }
+        }
+      ]
     }
   end
 
@@ -1803,6 +1911,11 @@ defmodule Plaid.Factory do
       ],
       "ruleset" => %{
         "ruleset_key" => "mock",
+        "result" => "ACCEPT",
+        "triggered_rule_details" => %{
+          "internal_note" => "Account appears to be in good standing.",
+          "custom_action_key" => "3-day-hold"
+        },
         "outcome" => "accept"
       },
       "request_id" => "mdqfuVxeoza6mhu"
@@ -1975,6 +2088,62 @@ defmodule Plaid.Factory do
       ],
       "next_cursor" => "eyJkaXJlY3Rpb24iOiJuZXh0Iiwib2Zmc2V0IjoiMTU5NDM",
       "request_id" => "45QSn"
+    }
+  end
+
+  def http_response_body(:layer_session_token) do
+    %{
+      "link" => %{
+        "link_token" => "link-sandbox-af1a0311-da53-4636-b754-dd15cc058176",
+        "expiration" => "2026-10-23T12:00:00Z",
+        "user_id" => "usr_9nSp2KuZ2x4JDw"
+      },
+      "request_id" => "XQVgFigpGHXkb0b"
+    }
+  end
+
+  def http_response_body(:layer_user_account_session) do
+    edit_counts = %{
+      "edits_current" => 0,
+      "edits_1d" => 1,
+      "edits_30d" => 2,
+      "edits_365d" => 3,
+      "edits_all_time" => 4
+    }
+
+    %{
+      "identity" => %{
+        "name" => %{"first_name" => "Leslie", "last_name" => "Knope"},
+        "address" => %{
+          "street" => "123 Main St.",
+          "street2" => nil,
+          "city" => "Pawnee",
+          "region" => "IN",
+          "postal_code" => "41006",
+          "country" => "US"
+        },
+        "email" => "leslie@knope.com",
+        "phone_number" => "+14157890000",
+        "date_of_birth" => "1979-01-01",
+        "ssn" => "987654321",
+        "ssn_last_4" => "4321"
+      },
+      "identity_edit_history" => %{
+        "name" => edit_counts,
+        "address" => edit_counts,
+        "email" => edit_counts,
+        "date_of_birth" => edit_counts,
+        "official_document" => %{"ssn" => edit_counts}
+      },
+      "items" => [
+        %{
+          "item_id" => "Ed6bjNrDLJfGvZWwnkQlfxwoNz54B5C97ejBr",
+          "access_token" => "access-sandbox-435beced-94e8-4df3-a181-1dde1cfa19f0"
+        }
+      ],
+      "link_session_id" => "1daca4d5-9a0d-4e85-a2e9-1e905ecaa32e",
+      "idv_session_status" => "success",
+      "request_id" => "m8MDnv9okwxFNBV"
     }
   end
 end

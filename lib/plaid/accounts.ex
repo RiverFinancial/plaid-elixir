@@ -4,7 +4,6 @@ defmodule Plaid.Accounts do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, request_id: nil
@@ -35,6 +34,7 @@ defmodule Plaid.Accounts do
               type: nil,
               subtype: nil,
               verification_status: nil,
+              verification_insights: nil,
               holder_category: nil
 
     @type t :: %__MODULE__{
@@ -49,8 +49,60 @@ defmodule Plaid.Accounts do
             type: String.t(),
             subtype: String.t(),
             verification_status: String.t(),
+            verification_insights: Plaid.Accounts.Account.VerificationInsights.t() | nil,
             holder_category: String.t() | nil
           }
+
+    defmodule VerificationInsights do
+      @moduledoc """
+      Plaid Account Verification Insights data structure.
+
+      Returned for Auth Items verified with Database Auth.
+      `account_number_format` is one of `"valid"`, `"invalid"` or `"unknown"`.
+      """
+
+      @derive Jason.Encoder
+      defstruct name_match_score: nil,
+                network_status: nil,
+                previous_returns: nil,
+                account_number_format: nil
+
+      @type t :: %__MODULE__{
+              name_match_score: integer() | nil,
+              network_status: Plaid.Accounts.Account.VerificationInsights.NetworkStatus.t() | nil,
+              previous_returns:
+                Plaid.Accounts.Account.VerificationInsights.PreviousReturns.t() | nil,
+              account_number_format: String.t() | nil
+            }
+
+      defmodule NetworkStatus do
+        @moduledoc """
+        Plaid Account Verification Insights Network Status data structure.
+        """
+
+        @derive Jason.Encoder
+        defstruct has_numbers_match: nil,
+                  is_numbers_match_verified: nil
+
+        @type t :: %__MODULE__{
+                has_numbers_match: boolean() | nil,
+                is_numbers_match_verified: boolean() | nil
+              }
+      end
+
+      defmodule PreviousReturns do
+        @moduledoc """
+        Plaid Account Verification Insights Previous Returns data structure.
+        """
+
+        @derive Jason.Encoder
+        defstruct has_previous_administrative_return: nil
+
+        @type t :: %__MODULE__{
+                has_previous_administrative_return: boolean() | nil
+              }
+      end
+    end
 
     defmodule Balance do
       @moduledoc """
@@ -62,14 +114,16 @@ defmodule Plaid.Accounts do
                 current: nil,
                 limit: nil,
                 iso_currency_code: nil,
-                unofficial_currency_code: nil
+                unofficial_currency_code: nil,
+                last_updated_datetime: nil
 
       @type t :: %__MODULE__{
               available: float,
               current: float,
               limit: float,
               iso_currency_code: String.t(),
-              unofficial_currency_code: String.t()
+              unofficial_currency_code: String.t(),
+              last_updated_datetime: String.t() | nil
             }
     end
 
@@ -161,19 +215,15 @@ defmodule Plaid.Accounts do
   %{access_token: "access-token"}
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Accounts.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Accounts.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     request_operation("accounts/get", params, config)
   end
 
   defp request_operation(endpoint, params, config) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_accounts(&1))
+    |> Plaid.request(config, &map_accounts(&1))
   end
 
   defp map_accounts(body) do
@@ -183,6 +233,10 @@ defmodule Plaid.Accounts do
         accounts: [
           %Plaid.Accounts.Account{
             balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            },
             owners: [
               %Plaid.Accounts.Account.Owner{
                 addresses: [%Plaid.Accounts.Account.Owner.Address{}],
@@ -205,7 +259,7 @@ defmodule Plaid.Accounts do
   %{access_token: "access-token", options: %{account_ids: ["account-id"]}}
   ```
   """
-  @spec get_balance(params, config) :: {:ok, Plaid.Accounts.t()} | error
+  @spec get_balance(params, config) :: {:ok, Plaid.Accounts.t()} | error | Plaid.Response.t()
   def get_balance(params, config \\ %{}) do
     request_operation("accounts/balance/get", params, config)
   end

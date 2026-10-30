@@ -4,7 +4,6 @@ defmodule Plaid.Income do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct item: nil, income: nil, request_id: nil
@@ -69,15 +68,11 @@ defmodule Plaid.Income do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Income.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Income.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "income/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_income(&1))
+    |> Plaid.request(config, &map_income(&1))
   end
 
   defp map_income(body) do

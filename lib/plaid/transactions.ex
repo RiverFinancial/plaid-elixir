@@ -4,7 +4,6 @@ defmodule Plaid.Transactions do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, total_transactions: nil, transactions: [], request_id: nil
@@ -199,15 +198,11 @@ defmodule Plaid.Transactions do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Transactions.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Transactions.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "transactions/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_transactions(&1))
+    |> Plaid.request(config, &map_transactions(&1))
   end
 
   defp map_transactions(body) do
@@ -216,7 +211,11 @@ defmodule Plaid.Transactions do
       %Plaid.Transactions{
         accounts: [
           %Plaid.Accounts.Account{
-            balances: %Plaid.Accounts.Account.Balance{}
+            balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            }
           }
         ],
         transactions: [
@@ -243,15 +242,11 @@ defmodule Plaid.Transactions do
   }
   ```
   """
-  @spec sync(params, config) :: {:ok, Plaid.Transactions.Sync.t()} | error
+  @spec sync(params, config) :: {:ok, Plaid.Transactions.Sync.t()} | error | Plaid.Response.t()
   def sync(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "transactions/sync", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_sync_transactions(&1))
+    |> Plaid.request(config, &map_sync_transactions(&1))
   end
 
   defp map_sync_transactions(body) do

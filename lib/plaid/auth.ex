@@ -4,7 +4,6 @@ defmodule Plaid.Auth do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, numbers: [], request_id: nil
@@ -47,14 +46,22 @@ defmodule Plaid.Auth do
       """
 
       @derive Jason.Encoder
-      defstruct account: nil, account_id: nil, routing: nil, wire_routing: nil, is_tokenized_account_number: false
+      defstruct account: nil,
+                account_id: nil,
+                routing: nil,
+                wire_routing: nil,
+                is_tokenized_account_number: false,
+                can_transfer_in: nil,
+                can_transfer_out: nil
 
       @type t :: %__MODULE__{
               account: String.t(),
               account_id: String.t(),
               routing: String.t(),
               wire_routing: String.t(),
-              is_tokenized_account_number: boolean()
+              is_tokenized_account_number: boolean(),
+              can_transfer_in: boolean() | nil,
+              can_transfer_out: boolean() | nil
             }
     end
 
@@ -119,15 +126,11 @@ defmodule Plaid.Auth do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Auth.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Auth.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "auth/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_auth(&1))
+    |> Plaid.request(config, &map_auth(&1))
   end
 
   defp map_auth(body) do
@@ -143,7 +146,11 @@ defmodule Plaid.Auth do
         item: %Plaid.Item{},
         accounts: [
           %Plaid.Accounts.Account{
-            balances: %Plaid.Accounts.Account.Balance{}
+            balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            }
           }
         ]
       }

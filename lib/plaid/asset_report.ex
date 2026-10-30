@@ -3,7 +3,6 @@ defmodule Plaid.AssetReport do
   Functions for Plaid `asset report` endpoint.
   """
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct asset_report_id: nil,
@@ -80,7 +79,11 @@ defmodule Plaid.AssetReport do
     @derive Jason.Encoder
     defstruct warning_type: nil, warning_code: nil, cause: nil
 
-    @type t :: %__MODULE__{warning_type: String.t(), warning_code: String.t(), cause: Plaid.AssetReport.Warning.Cause.t()}
+    @type t :: %__MODULE__{
+            warning_type: String.t(),
+            warning_code: String.t(),
+            cause: Plaid.AssetReport.Warning.Cause.t()
+          }
 
     defmodule Cause do
       @moduledoc """
@@ -133,7 +136,7 @@ defmodule Plaid.AssetReport do
   }
   ```
   """
-  @spec create_asset_report(params, config) :: {:ok, map} | error
+  @spec create_asset_report(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def create_asset_report(params, config \\ %{}) do
     mapper = fn %{"asset_report_token" => t, "asset_report_id" => id, "request_id" => r} ->
       %{asset_report_token: t, asset_report_id: id, request_id: r}
@@ -143,13 +146,9 @@ defmodule Plaid.AssetReport do
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 
   @doc """

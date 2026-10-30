@@ -4,7 +4,6 @@ defmodule Plaid.PaymentInitiation.Recipients do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct recipients: [], request_id: nil
@@ -67,19 +66,16 @@ defmodule Plaid.PaymentInitiation.Recipients do
   }
   ```
   """
-  @spec create(params, config) :: {:ok, Plaid.PaymentInitiation.Recipients.Recipient.t()} | error
+  @spec create(params, config) ::
+          {:ok, Plaid.PaymentInitiation.Recipients.Recipient.t()} | error | Plaid.Response.t()
   def create(params, config \\ %{}) do
     request_operation("payment_initiation/recipient/create", params, config, &map_recipient(&1))
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 
   defp map_recipients(body) do
@@ -108,7 +104,8 @@ defmodule Plaid.PaymentInitiation.Recipients do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.PaymentInitiation.Recipients.Recipient.t()} | error
+  @spec get(params, config) ::
+          {:ok, Plaid.PaymentInitiation.Recipients.Recipient.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     request_operation("payment_initiation/recipient/get", params, config, &map_recipient(&1))
   end
@@ -116,7 +113,7 @@ defmodule Plaid.PaymentInitiation.Recipients do
   @doc """
   Lists all recipients.
   """
-  @spec list(config) :: {:ok, Plaid.PaymentInitiation.Recipients.t()} | error
+  @spec list(config) :: {:ok, Plaid.PaymentInitiation.Recipients.t()} | error | Plaid.Response.t()
   def list(config \\ %{}) do
     request_operation("payment_initiation/recipient/list", %{}, config, &map_recipients(&1))
   end

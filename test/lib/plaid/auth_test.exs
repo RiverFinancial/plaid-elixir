@@ -51,7 +51,23 @@ defmodule Plaid.AuthTest do
       assert {:ok, ds} = Plaid.Auth.get(params, config)
       assert Plaid.Auth == ds.__struct__
       assert Plaid.Accounts.Account == List.first(ds.accounts).__struct__
+
+      assert %Plaid.Accounts.Account.VerificationInsights{
+               name_match_score: 70,
+               network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{
+                 has_numbers_match: true,
+                 is_numbers_match_verified: true
+               },
+               previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{
+                 has_previous_administrative_return: false
+               },
+               account_number_format: "valid"
+             } = List.first(ds.accounts).verification_insights
+
       assert Plaid.Item == ds.item.__struct__
+
+      assert %Plaid.Auth.Numbers.ACH{can_transfer_in: true, can_transfer_out: false} =
+               List.first(ds.numbers.ach)
     end
 
     @tag :integration

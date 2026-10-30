@@ -4,7 +4,6 @@ defmodule Plaid.Identity do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, request_id: nil
@@ -28,15 +27,11 @@ defmodule Plaid.Identity do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Identity.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Identity.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "identity/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_identity(&1))
+    |> Plaid.request(config, &map_identity(&1))
   end
 
   defp map_identity(body) do
@@ -47,6 +42,10 @@ defmodule Plaid.Identity do
         accounts: [
           %Plaid.Accounts.Account{
             balances: %Plaid.Accounts.Account.Balance{},
+            verification_insights: %Plaid.Accounts.Account.VerificationInsights{
+              network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{},
+              previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{}
+            },
             owners: [
               %Plaid.Accounts.Account.Owner{
                 addresses: [%Plaid.Accounts.Account.Owner.Address{}],

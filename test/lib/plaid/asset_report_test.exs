@@ -70,8 +70,7 @@ defmodule Plaid.AssetReportTest do
         |> Plug.Conn.resp(200, JSON.encode!(body))
       end)
 
-      assert {:ok,
-              %{asset_report_id: _, asset_report_token: _, request_id: _}} =
+      assert {:ok, %{asset_report_id: _, asset_report_token: _, request_id: _}} =
                Plaid.AssetReport.create_asset_report(params, config)
     end
   end

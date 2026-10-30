@@ -4,7 +4,6 @@ defmodule Plaid.Categories do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct categories: [], request_id: nil
@@ -26,15 +25,11 @@ defmodule Plaid.Categories do
   @doc """
   Gets all categories.
   """
-  @spec get(config) :: {:ok, Plaid.Categories.t()} | error
+  @spec get(config) :: {:ok, Plaid.Categories.t()} | error | Plaid.Response.t()
   def get(config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "categories/get")
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_categories(&1))
+    |> Plaid.request(config, &map_categories(&1))
   end
 
   defp map_categories(body) do

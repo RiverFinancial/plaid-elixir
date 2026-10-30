@@ -58,6 +58,36 @@ defmodule Plaid.TransactionsTest do
       assert Plaid.Item == ds.item.__struct__
     end
 
+    @tag :unit
+    test "maps verification_insights on accounts", %{params: params, config: config} do
+      insights = List.first(http_response_body(:accounts)["accounts"])["verification_insights"]
+
+      body =
+        Map.update!(http_response_body(:transactions), "accounts", fn [first | rest] ->
+          [Map.put(first, "verification_insights", insights) | rest]
+        end)
+
+      PlaidMock
+      |> expect(:send_request, fn _request, _client -> {:ok, %Tesla.Env{}} end)
+      |> expect(:handle_response, fn _response, mapper -> {:ok, mapper.(body)} end)
+
+      assert {:ok, ds} = Plaid.Transactions.get(params, config)
+
+      assert %Plaid.Accounts.Account.VerificationInsights{
+               name_match_score: 70,
+               network_status: %Plaid.Accounts.Account.VerificationInsights.NetworkStatus{
+                 has_numbers_match: true,
+                 is_numbers_match_verified: true
+               },
+               previous_returns: %Plaid.Accounts.Account.VerificationInsights.PreviousReturns{
+                 has_previous_administrative_return: false
+               },
+               account_number_format: "valid"
+             } = List.first(ds.accounts).verification_insights
+
+      assert Enum.at(ds.accounts, 1).verification_insights == nil
+    end
+
     @tag :integration
     test "success integration test", %{params: params} do
       bypass = Bypass.open()

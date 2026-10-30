@@ -67,6 +67,19 @@ defmodule Plaid.InstitutionsTest do
       assert {:ok, ds} = Plaid.Institutions.get(params, config)
       assert Plaid.Institutions == ds.__struct__
       assert Plaid.Institutions.Institution == List.first(ds.institutions).__struct__
+
+      institution = List.first(ds.institutions)
+      assert institution.dtc_numbers == ["2236", "0955"]
+      assert institution.connection_availability == "SUPPORTED"
+
+      assert %Plaid.Institutions.Institution.AuthMetadata{
+               supported_methods: %Plaid.Institutions.Institution.AuthMetadata.SupportedMethods{
+                 instant_auth: true,
+                 instant_match: false,
+                 automated_micro_deposits: true,
+                 instant_micro_deposits: false
+               }
+             } = institution.auth_metadata
     end
 
     @tag :integration
@@ -133,6 +146,9 @@ defmodule Plaid.InstitutionsTest do
       assert {:ok, ds} = Plaid.Institutions.get_by_id(params, config)
       assert Plaid.Institutions.Institution == ds.__struct__
       assert ds.request_id
+      assert ds.dtc_numbers == []
+      assert ds.connection_availability == "NOT_SUPPORTED"
+      assert ds.auth_metadata == nil
     end
 
     @tag :unit

@@ -6,6 +6,7 @@ defmodule Plaid do
   """
 
   alias Plaid.Client.Request
+  alias Plaid.Response
 
   # Proxy error pages can be large, and the error message often ends up in logs.
   @max_error_body_bytes 1_000
@@ -41,6 +42,38 @@ defmodule Plaid do
   end
 
   @type mapper :: (any() -> any())
+
+  @doc """
+  Sends a request and maps its response using the endpoint's mapper.
+
+  By default returns the mapped result. With `response_mode: :full` in
+  `config`, returns a `Plaid.Response` containing that result alongside the
+  decoded body and HTTP status, including unsuccessful responses. Endpoint
+  functions accept the same option.
+  """
+  @spec request(Request.t(), map(), mapper()) ::
+          {:ok, term()} | {:error, term()} | Response.t()
+  def request(request, config \\ %{}, mapper \\ &Function.identity/1) do
+    client = config[:client] || __MODULE__
+
+    response =
+      request
+      |> Request.add_metadata(config)
+      |> client.send_request(Plaid.Client.new(config))
+
+    result = client.handle_response(response, mapper)
+
+    case {config[:response_mode], response} do
+      {:full, {:ok, %Tesla.Env{body: body, status: status}}} ->
+        %Response{result: result, body: body, status: status}
+
+      {:full, {:error, _reason}} ->
+        %Response{result: result}
+
+      _ ->
+        result
+    end
+  end
 
   @doc """
   Send an HTTP request to Plaid.
