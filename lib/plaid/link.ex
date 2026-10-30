@@ -4,7 +4,6 @@ defmodule Plaid.Link do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct link_token: nil,
@@ -221,19 +220,15 @@ defmodule Plaid.Link do
   }
   ```
   """
-  @spec create_link_token(params, config) :: {:ok, Plaid.Link.t()} | error
+  @spec create_link_token(params, config) :: {:ok, Plaid.Link.t()} | error | Plaid.Response.t()
   def create_link_token(params, config \\ %{}) do
     request_operation("link/token/create", params, config)
   end
 
   defp request_operation(endpoint, params, config) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_link(&1))
+    |> Plaid.request(config, &map_link(&1))
   end
 
   defp map_link(body) do
@@ -268,7 +263,7 @@ defmodule Plaid.Link do
   }
   ```
   """
-  @spec get_link_token(params, config) :: {:ok, Plaid.Link.t()} | error
+  @spec get_link_token(params, config) :: {:ok, Plaid.Link.t()} | error | Plaid.Response.t()
   def get_link_token(params, config \\ %{}) do
     request_operation("link/token/get", params, config)
   end

@@ -6,7 +6,6 @@ defmodule Plaid.IdentityVerification do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct id: nil,
@@ -424,15 +423,12 @@ defmodule Plaid.IdentityVerification do
   }
   ```
   """
-  @spec create(params, config) :: {:ok, Plaid.IdentityVerification.t()} | error
+  @spec create(params, config) ::
+          {:ok, Plaid.IdentityVerification.t()} | error | Plaid.Response.t()
   def create(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "identity_verification/create", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_identity_verification(&1))
+    |> Plaid.request(config, &map_identity_verification(&1))
   end
 
   @doc """
@@ -443,15 +439,11 @@ defmodule Plaid.IdentityVerification do
   %{identity_verification_id: "idv_52xR9LKo77r1Np"}
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.IdentityVerification.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.IdentityVerification.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "identity_verification/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_identity_verification(&1))
+    |> Plaid.request(config, &map_identity_verification(&1))
   end
 
   @doc """
@@ -466,15 +458,12 @@ defmodule Plaid.IdentityVerification do
   }
   ```
   """
-  @spec list(params, config) :: {:ok, Plaid.IdentityVerification.Verifications.t()} | error
+  @spec list(params, config) ::
+          {:ok, Plaid.IdentityVerification.Verifications.t()} | error | Plaid.Response.t()
   def list(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "identity_verification/list", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_verifications(&1))
+    |> Plaid.request(config, &map_verifications(&1))
   end
 
   @doc """
@@ -489,15 +478,12 @@ defmodule Plaid.IdentityVerification do
   }
   ```
   """
-  @spec retry(params, config) :: {:ok, Plaid.IdentityVerification.t()} | error
+  @spec retry(params, config) ::
+          {:ok, Plaid.IdentityVerification.t()} | error | Plaid.Response.t()
   def retry(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "identity_verification/retry", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_identity_verification(&1))
+    |> Plaid.request(config, &map_identity_verification(&1))
   end
 
   defp map_identity_verification(body) do

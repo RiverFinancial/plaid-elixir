@@ -4,7 +4,6 @@ defmodule Plaid.Layer do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @type params :: %{required(atom) => term}
   @type config :: %{required(atom) => String.t() | keyword}
@@ -211,7 +210,8 @@ defmodule Plaid.Layer do
   }
   ```
   """
-  @spec create_session_token(params, config) :: {:ok, Plaid.Layer.SessionToken.t()} | error
+  @spec create_session_token(params, config) ::
+          {:ok, Plaid.Layer.SessionToken.t()} | error | Plaid.Response.t()
   def create_session_token(params, config \\ %{}) do
     request_operation("session/token/create", params, config, &map_session_token/1)
   end
@@ -227,7 +227,7 @@ defmodule Plaid.Layer do
   ```
   """
   @spec get_user_account_session(params, config) ::
-          {:ok, Plaid.Layer.UserAccountSession.t()} | error
+          {:ok, Plaid.Layer.UserAccountSession.t()} | error | Plaid.Response.t()
   def get_user_account_session(params, config \\ %{}) do
     request_operation("user_account/session/get", params, config, &map_user_account_session/1)
   end
@@ -264,12 +264,8 @@ defmodule Plaid.Layer do
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 end

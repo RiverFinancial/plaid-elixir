@@ -4,7 +4,6 @@ defmodule Plaid.Investments.Holdings do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, securities: [], holdings: [], request_id: nil
@@ -62,15 +61,11 @@ defmodule Plaid.Investments.Holdings do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Investments.Holdings.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Investments.Holdings.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "investments/holdings/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_investments_holdings(&1))
+    |> Plaid.request(config, &map_investments_holdings(&1))
   end
 
   defp map_investments_holdings(body) do

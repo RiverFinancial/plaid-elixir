@@ -191,4 +191,30 @@ defmodule Plaid.LinkTest do
       assert {:error, %Plaid.Error{}} = Plaid.Link.get_link_token(params, config)
     end
   end
+
+  test "keeps absent, null and empty session results", %{config: config} do
+    body =
+      :get_link_token
+      |> Plaid.Factory.http_response_body()
+      |> Map.put("link_sessions", [
+        %{"link_session_id" => "absent"},
+        %{"link_session_id" => "null", "results" => nil, "events" => nil, "exit" => nil},
+        %{"link_session_id" => "empty", "events" => [], "results" => %{"item_add_results" => []}}
+      ])
+
+    PlaidMock
+    |> expect(:send_request, fn _request, _client -> {:ok, %Tesla.Env{}} end)
+    |> expect(:handle_response, fn _response, mapper -> {:ok, mapper.(body)} end)
+
+    assert {:ok, %Plaid.Link{link_sessions: [absent, null, empty]}} =
+             Plaid.Link.get_link_token(%{link_token: "link-test"}, config)
+
+    assert absent.results == nil
+    assert absent.events == nil
+    assert null.results == nil
+    assert null.events == nil
+    assert null.exit == nil
+    assert empty.events == []
+    assert empty.results.item_add_results == []
+  end
 end

@@ -4,7 +4,6 @@ defmodule Plaid.Institutions do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct institutions: [], request_id: nil, total: nil
@@ -298,19 +297,15 @@ defmodule Plaid.Institutions do
   `dtc_numbers` and `connection_availability` are always returned. Pass
   `options: %{include_auth_metadata: true}` to populate `auth_metadata`.
   """
-  @spec get(params, config) :: {:ok, Plaid.Institutions.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Institutions.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     request_operation("institutions/get", params, config, &map_institutions(&1))
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 
   defp map_institutions(body) do
@@ -367,7 +362,7 @@ defmodule Plaid.Institutions do
   supports for new Items; only this endpoint returns them.
   """
   @spec get_by_id(String.t() | params, config) ::
-          {:ok, Plaid.Institutions.Institution.t()} | error
+          {:ok, Plaid.Institutions.Institution.t()} | error | Plaid.Response.t()
   def get_by_id(params, config \\ %{}) do
     params = if is_binary(params), do: %{institution_id: params}, else: params
 
@@ -385,7 +380,7 @@ defmodule Plaid.Institutions do
   `dtc_numbers` and `connection_availability` are always returned. Pass
   `options: %{include_auth_metadata: true}` to populate `auth_metadata`.
   """
-  @spec search(params, config) :: {:ok, Plaid.Institutions.t()} | error
+  @spec search(params, config) :: {:ok, Plaid.Institutions.t()} | error | Plaid.Response.t()
   def search(params, config \\ %{}) do
     request_operation("institutions/search", params, config, &map_institutions(&1))
   end

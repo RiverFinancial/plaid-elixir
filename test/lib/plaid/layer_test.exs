@@ -234,6 +234,36 @@ defmodule Plaid.LayerTest do
     end
   end
 
+  test "keeps distinct per-field edit counts, partial history and an empty Item list", %{
+    config: config
+  } do
+    body =
+      :layer_user_account_session
+      |> http_response_body()
+      |> Map.put("items", [])
+      |> Map.put("identity_edit_history", %{
+        "name" => %{"edits_current" => 0, "edits_30d" => 2},
+        "email" => %{"edits_current" => 3, "edits_30d" => 4},
+        "official_document" => %{"ssn" => %{"edits_current" => 5, "edits_30d" => 6}}
+      })
+
+    PlaidMock
+    |> expect(:send_request, fn _request, _client -> {:ok, %Tesla.Env{}} end)
+    |> expect(:handle_response, fn _response, mapper -> {:ok, mapper.(body)} end)
+
+    assert {:ok, %UserAccountSession{items: [], identity_edit_history: history}} =
+             Plaid.Layer.get_user_account_session(@user_account_session_params, config)
+
+    assert %EditCounts{edits_current: 0, edits_30d: 2, edits_1d: nil} = history.name
+    assert %EditCounts{edits_current: 3, edits_30d: 4} = history.email
+
+    assert %OfficialDocument{ssn: %EditCounts{edits_current: 5, edits_30d: 6}} =
+             history.official_document
+
+    assert history.address == nil
+    assert history.date_of_birth == nil
+  end
+
   defp bypass_config(bypass) do
     %{
       client_id: "test_id",

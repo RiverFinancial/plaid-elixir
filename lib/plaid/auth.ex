@@ -4,7 +4,6 @@ defmodule Plaid.Auth do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, numbers: [], request_id: nil
@@ -127,15 +126,11 @@ defmodule Plaid.Auth do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Auth.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Auth.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "auth/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_auth(&1))
+    |> Plaid.request(config, &map_auth(&1))
   end
 
   defp map_auth(body) do

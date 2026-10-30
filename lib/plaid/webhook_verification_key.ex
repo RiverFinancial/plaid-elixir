@@ -4,7 +4,6 @@ defmodule Plaid.WebhookVerificationKey do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct key: %{},
@@ -28,14 +27,11 @@ defmodule Plaid.WebhookVerificationKey do
   }
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.WebhookVerificationKey.t()} | error
+  @spec get(params, config) ::
+          {:ok, Plaid.WebhookVerificationKey.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: "webhook_verification_key/get", body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&Plaid.ResponseMapper.transform(&1, %Plaid.WebhookVerificationKey{}))
+    |> Plaid.request(config, &Plaid.ResponseMapper.transform(&1, %Plaid.WebhookVerificationKey{}))
   end
 end

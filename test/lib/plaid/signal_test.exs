@@ -406,4 +406,22 @@ defmodule Plaid.SignalTest do
       assert {:error, %Plaid.Error{}} = Plaid.Signal.prepare(@prepare_params, config)
     end
   end
+
+  test "keeps absent and null ruleset details", %{config: config} do
+    for ruleset <- [nil, %{}, %{"result" => "REVIEW", "triggered_rule_details" => nil}] do
+      body = http_response_body(:signal_evaluate) |> Map.put("ruleset", ruleset)
+
+      PlaidMock
+      |> expect(:send_request, fn _request, _client -> {:ok, %Tesla.Env{}} end)
+      |> expect(:handle_response, fn _response, mapper -> {:ok, mapper.(body)} end)
+
+      assert {:ok, result} = Plaid.Signal.evaluate(@evaluate_params, config)
+
+      if ruleset == nil do
+        assert result.ruleset == nil
+      else
+        assert result.ruleset.triggered_rule_details == nil
+      end
+    end
+  end
 end

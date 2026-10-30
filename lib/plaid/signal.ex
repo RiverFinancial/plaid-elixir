@@ -4,7 +4,6 @@ defmodule Plaid.Signal do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct scores: nil,
@@ -138,7 +137,7 @@ defmodule Plaid.Signal do
   }
   ```
   """
-  @spec evaluate(params, config) :: {:ok, Plaid.Signal.t()} | error
+  @spec evaluate(params, config) :: {:ok, Plaid.Signal.t()} | error | Plaid.Response.t()
   def evaluate(params, config \\ %{}) do
     request_operation("signal/evaluate", params, config, &map_signal/1)
   end
@@ -163,7 +162,7 @@ defmodule Plaid.Signal do
   {:ok, %{request_id: "a325fa"}}
   ```
   """
-  @spec report_decision(params, config) :: {:ok, map} | error
+  @spec report_decision(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def report_decision(params, config \\ %{}) do
     request_operation("signal/decision/report", params, config, &map_request_id/1)
   end
@@ -185,7 +184,7 @@ defmodule Plaid.Signal do
   {:ok, %{request_id: "a325fa"}}
   ```
   """
-  @spec report_return(params, config) :: {:ok, map} | error
+  @spec report_return(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def report_return(params, config \\ %{}) do
     request_operation("signal/return/report", params, config, &map_request_id/1)
   end
@@ -208,7 +207,7 @@ defmodule Plaid.Signal do
   {:ok, %{request_id: "a325fa"}}
   ```
   """
-  @spec prepare(params, config) :: {:ok, map} | error
+  @spec prepare(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def prepare(params, config \\ %{}) do
     request_operation("signal/prepare", params, config, &map_request_id/1)
   end
@@ -234,12 +233,8 @@ defmodule Plaid.Signal do
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 end

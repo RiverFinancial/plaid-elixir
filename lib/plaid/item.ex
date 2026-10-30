@@ -4,7 +4,6 @@ defmodule Plaid.Item do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct available_products: [],
@@ -99,7 +98,7 @@ defmodule Plaid.Item do
   %{access_token: "access-env-identifier"}
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Item.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Item.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     mapper = fn %{"item" => item, "request_id" => r, "status" => s} ->
       map_item(Map.merge(item, %{"request_id" => r, "status" => s}))
@@ -109,13 +108,9 @@ defmodule Plaid.Item do
   end
 
   defp request_operation(endpoint, params, config, mapper) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(mapper)
+    |> Plaid.request(config, mapper)
   end
 
   defp map_item(body) do
@@ -144,7 +139,7 @@ defmodule Plaid.Item do
   {:ok, %{access_token: "access-env-identifier", item_id: "some-id", request_id: "f24wfg"}}
   ```
   """
-  @spec exchange_public_token(params, config) :: {:ok, map} | error
+  @spec exchange_public_token(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def exchange_public_token(params, config \\ %{}) do
     mapper = fn %{"access_token" => t, "item_id" => i, "request_id" => r} ->
       %{access_token: t, item_id: i, request_id: r}
@@ -166,7 +161,7 @@ defmodule Plaid.Item do
   {:ok, %{public_token: "access-env-identifier", expiration: 3600, request_id: "kg414f"}}
   ```
   """
-  @spec create_public_token(params, config) :: {:ok, map} | error
+  @spec create_public_token(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def create_public_token(params, config \\ %{}) do
     mapper = fn %{"public_token" => t, "expiration" => e, "request_id" => r} ->
       %{public_token: t, expiration: e, request_id: r}
@@ -183,7 +178,7 @@ defmodule Plaid.Item do
   %{access_token: "access-env-identifier", webhook: "http://mywebsite/api"}
   ```
   """
-  @spec update_webhook(params, config) :: {:ok, Plaid.Item.t()} | error
+  @spec update_webhook(params, config) :: {:ok, Plaid.Item.t()} | error | Plaid.Response.t()
   def update_webhook(params, config \\ %{}) do
     mapper = fn %{"item" => item, "request_id" => r} ->
       map_item(Map.merge(item, %{"request_id" => r}))
@@ -205,7 +200,7 @@ defmodule Plaid.Item do
   {:ok, %{new_access_token: "access-env-identifier", request_id: "gag8fs"}}
   ```
   """
-  @spec rotate_access_token(params, config) :: {:ok, map} | error
+  @spec rotate_access_token(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def rotate_access_token(params, config \\ %{}) do
     mapper = fn %{"new_access_token" => t, "request_id" => r} ->
       %{new_access_token: t, request_id: r}
@@ -227,7 +222,7 @@ defmodule Plaid.Item do
   {:ok, %{access_token: "access-env-identifier", item_id: "some-id", request_id: "f24wfg"}}
   ```
   """
-  @spec update_version_access_token(params, config) :: {:ok, map} | error
+  @spec update_version_access_token(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def update_version_access_token(params, config \\ %{}) do
     mapper = fn %{"access_token" => t, "request_id" => r} ->
       %{access_token: t, request_id: r}
@@ -249,7 +244,7 @@ defmodule Plaid.Item do
   {:ok, %{request_id: "[Unique request ID]"}}
   ```
   """
-  @spec remove(params, config) :: {:ok, map} | error
+  @spec remove(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def remove(params, config \\ %{}) do
     mapper = fn %{"request_id" => r} ->
       %{request_id: r}
@@ -276,7 +271,7 @@ defmodule Plaid.Item do
   {:ok, %{processor_token: "some-token", request_id: "k522f2"}}
   ```
   """
-  @spec create_processor_token(params, config) :: {:ok, map} | error
+  @spec create_processor_token(params, config) :: {:ok, map} | error | Plaid.Response.t()
   def create_processor_token(params, config) do
     mapper = fn %{"processor_token" => t, "request_id" => r} ->
       %{processor_token: t, request_id: r}
@@ -299,7 +294,8 @@ defmodule Plaid.Item do
   {:ok, %{stripe_bank_account_token: "btok_Kb62HbBqrrvdf8pBsAdt", request_id: "[Unique request ID]"}}
   ```
   """
-  @spec create_stripe_bank_account_token(params, config) :: {:ok, map} | error
+  @spec create_stripe_bank_account_token(params, config) ::
+          {:ok, map} | error | Plaid.Response.t()
   def create_stripe_bank_account_token(params, config \\ %{}) do
     mapper = fn %{"stripe_bank_account_token" => t, "request_id" => r} ->
       %{stripe_bank_account_token: t, request_id: r}

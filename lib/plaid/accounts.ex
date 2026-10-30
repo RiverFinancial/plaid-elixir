@@ -4,7 +4,6 @@ defmodule Plaid.Accounts do
   """
 
   alias Plaid.Client.Request
-  alias Plaid.Client
 
   @derive Jason.Encoder
   defstruct accounts: [], item: nil, request_id: nil
@@ -216,19 +215,15 @@ defmodule Plaid.Accounts do
   %{access_token: "access-token"}
   ```
   """
-  @spec get(params, config) :: {:ok, Plaid.Accounts.t()} | error
+  @spec get(params, config) :: {:ok, Plaid.Accounts.t()} | error | Plaid.Response.t()
   def get(params, config \\ %{}) do
     request_operation("accounts/get", params, config)
   end
 
   defp request_operation(endpoint, params, config) do
-    c = config[:client] || Plaid
-
     Request
     |> struct(method: :post, endpoint: endpoint, body: params)
-    |> Request.add_metadata(config)
-    |> c.send_request(Client.new(config))
-    |> c.handle_response(&map_accounts(&1))
+    |> Plaid.request(config, &map_accounts(&1))
   end
 
   defp map_accounts(body) do
@@ -264,7 +259,7 @@ defmodule Plaid.Accounts do
   %{access_token: "access-token", options: %{account_ids: ["account-id"]}}
   ```
   """
-  @spec get_balance(params, config) :: {:ok, Plaid.Accounts.t()} | error
+  @spec get_balance(params, config) :: {:ok, Plaid.Accounts.t()} | error | Plaid.Response.t()
   def get_balance(params, config \\ %{}) do
     request_operation("accounts/balance/get", params, config)
   end
